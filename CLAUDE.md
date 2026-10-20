@@ -40,11 +40,12 @@ src/
   assets/                  ci-signature.png, love-you-ci-logo.png
   config/nav.ts            single source for header + footer links
   components/
-    layout/                Layout (header, <Outlet/>, footer), SiteHeader, SiteFooter, ScrollToTop
-    ui/                    Wordmark, Cta, TextLink, PhotoSlot, Taped
+    layout/                Layout (header, <Outlet/>, footer, <ScrollRestoration/>), SiteHeader, SiteFooter
+    ui/                    Icon (Lucide wrapper + ICON_STROKE), Wordmark, Cta, TextLink, PhotoSlot
     icons/                 InstagramIcon, YoutubeIcon (Lucide-style inline SVG)
   hooks/                   useCarousel, useParallaxFallback
-  lib/wix.ts               Wix SDK client
+  lib/wix.ts               Wix SDK client, visitor session, dev smoke test
+  test/                    Vitest setup (IO/matchMedia/CSS mocks) + renderRoute helper
   pages/
     home/                  HomePage + sections: Hero, Ribbon, MeetCi, Story, Looks
     AboutPage.tsx BookPage.tsx PortfolioPage.tsx ContactPage.tsx ShopPage.tsx
@@ -65,7 +66,7 @@ Conventions: function components, named exports, one component per file, typed p
 
 - Unknown URLs redirect to `/` (`<Navigate to="/" replace />`). There is no 404 page.
 - Both "Book Now" CTAs go to `/book`. The Meet Ci "Portfolio" text link goes to `/portfolio`. Footer links mirror the nav.
-- Scroll resets to the top on every route change.
+- Scroll resets to the top on every route change (React Router `<ScrollRestoration />` in Layout).
 - Titles use React 19's native `<title>` inside each page component.
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
 - **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and looks exactly like the template's link. TODO: wire it to Wix Members hosted login.
@@ -92,11 +93,11 @@ Tokens live in `src/index.css`. Colors and fonts are in `@theme`, so they work a
 - **Fonts** (Google Fonts `<link>` in `index.html`): `font-display` Italiana (headings, wordmark), `font-body` Barlow (weight 300 body, 400/500/600 UI), `font-script` Mrs Saint Delafield (signature).
 - **Type scale** (1.25 ratio, 17px base): `t-sm` 0.875rem, `t-base` 1.0625rem, `t-lg` 1.25rem, `t-xl` clamp(1.5rem, 2.2vw, 1.875rem), `t-2xl` clamp(2.25rem, 4.6vw, 3.75rem), `t-ghost` clamp(7rem, 24vw, 22rem).
 - **Layout vars**: `--gutter: clamp(16px, 5vw, 72px)`, `--max: 1320px`, `--bar: 72px` (header height), `--ease: cubic-bezier(0.16, 1, 0.3, 1)`.
-- **Breakpoints** are max-width, as in the template: 1080px (desktop nav becomes the menu button), 860px (hero and Meet stack to one column), 560px (small phone tweaks). Use `max-[1080px]:`, `max-[860px]:`, `max-[560px]:` variants. Do not swap them for Tailwind's min-width `sm`/`md`/`lg`.
+- **Breakpoints** are max-width, as in the template: 1080px (desktop nav becomes the menu button), 860px (hero and Meet stack to one column), 560px (small phone tweaks). Use the custom variants `bp-1080:`, `bp-860:`, `bp-560:` (defined with `@custom-variant` in `index.css`). Do not use Tailwind's `max-[1080px]:`, which compiles to `width < 1080px` and misses exactly 1080px, and do not swap them for min-width `sm`/`md`/`lg`.
 
 ### Styling policy (hybrid)
 
-- Layout, spacing, typography and colors go in JSX as Tailwind utilities, with arbitrary values copied exactly from the template (for example `py-[clamp(96px,13vw,180px)]`).
+- Layout, spacing, typography and colors go in JSX as Tailwind utilities, with arbitrary values copied exactly from the template (for example `py-[clamp(96px,13vw,180px)]`). Use `[transform:rotate(...)]` rather than `rotate-*`, because Tailwind's `rotate-*` sets the separate `rotate` property, which composes differently with the keyframe animations. Use `--edge` for the template's `max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)))` inset.
 - Things that are awkward as utilities are small classes in `@layer components`: `.wrap`, `.slot` / `.slot.on-dark`, `.taped` / `.tape-rose` (torn tape `::before` with clip-path), `[data-parallax]` (`@property --p` + `animation-timeline: view()`), `.cta` / `.cta.light` (rose-gold fill `::before`), nav underline `::after`, `.text-link`, story noise texture `::after`, and the keyframes (`marquee`, `rise`, `drop`, `stick`, `parallax`) with their `prefers-reduced-motion` overrides.
 - **Preflight caveat**: the template has no CSS reset, but Tailwind Preflight does. When something looks off, check Preflight first: button border and background, `ul`/`blockquote`/`figure` margins, heading font sizes, `img` display. Set the template's values explicitly.
 
@@ -114,7 +115,7 @@ The template uses Phosphor Light. The app uses `lucide-react`:
 | `ph-arrow-left` / `ph-arrow-right` | `ArrowLeft` / `ArrowRight` |
 | `ph-instagram-logo` / `ph-youtube-logo` | `components/icons/InstagramIcon`, `YoutubeIcon` (Lucide v1 has no brand icons) |
 
-Icon `size` equals the template's icon font-size in px (for example 18 for 1.125rem). Use a light stroke (about 1.25; tune it against the template visually). Always set `aria-hidden`.
+Render icons through `<Icon icon={X} size={n} />` (`components/ui/Icon.tsx`), which applies `ICON_STROKE` (1.25) and `aria-hidden`. `size` equals the template's icon font-size in px (for example 18 for 1.125rem).
 
 ## Behavior to preserve (from the template's JS)
 
@@ -127,7 +128,7 @@ Icon `size` equals the template's icon font-size in px (for example 18 for 1.125
 
 ## Parity check (template vs app)
 
-1. `npx serve reference -l 4000` (run in background) and `npm run dev`.
+1. `python3 -m http.server 4000 --directory reference` (run in background) and `npm run dev` (if port 5173 is taken by another project, use `--port 5180` and the matching URL below).
 2. Open two headed sessions:
    ```bash
    playwright-cli -s=template open --headed http://localhost:4000/template.html
@@ -136,6 +137,10 @@ Icon `size` equals the template's icon font-size in px (for example 18 for 1.125
 3. For each width in **375, 414, 560, 561, 768, 860, 861, 1024, 1080, 1081, 1280, 1440, 1920**: `resize` both sessions, take full-page `screenshot`s and compare them. Then `eval` computed styles and bounding boxes of the key elements (wordmark, hero h1, CTA, photo slots, ribbon, meet grid, story, look cards, footer) and diff them.
 4. Test interactions in both: nav hover underline, CTA hover fill, text-link hover, mobile menu (open, close, Escape, link click), carousel arrows, disabled ends and keyboard, marquee, load animations, parallax at several scroll offsets, and `set-reduced-motion reduce`.
 5. Repeat until the only differences left are accepted ones.
+
+Gotchas: compare element boxes at 0px tolerance. Pause the marquee (`set-reduced-motion reduce`) before diffing positions. Full-page screenshots stitch the sticky header in mid-page and can shift by 1px, so set the header to `position: relative` before capturing, or compare viewport screenshots instead. Make sure the app session is back on `/` after link-click tests. Remember that playwright `hover` needs a single-element locator (`>> nth=0`).
+
+Last result (feat/landing-page): computed styles and boxes identical at every listed width, at several scroll offsets and with reduced motion. Menu, hover states and carousel behave identically. Viewport pixel diffs show only the icon glyphs.
 
 **Accepted differences:** icon glyph shapes (Lucide vs Phosphor; size, position, color and stroke weight must match), the active-link underline on non-home pages, and Log In being a `<button>`.
 
@@ -146,5 +151,6 @@ Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 - Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`.
 - `src/lib/wix.ts` exports one shared client from `createClient` with `OAuthStrategy({ clientId: import.meta.env.VITE_WIX_CLIENT_ID, tokens })`. Visitor tokens are kept in localStorage (wrap reads and writes in try/catch) and reused across reloads.
 - `VITE_WIX_CLIENT_ID` is typed in `src/vite-env.d.ts`.
-- Before writing Stores code, check (Wix MCP) whether the site uses Catalog V1 (`products`) or V3 (`productsV3`).
+- The Wix site ("My Site 1", `fbd9c05b-586a-4fe0-b1ee-56aa493280c0`) has Bookings and Stores installed. Stores is on **Catalog V3**: use `productsV3` and V3 recipes only, never V1 `products`.
+- In dev, when `VITE_WIX_CLIENT_ID` is set, `main.tsx` runs `wixSmokeTest()`, which logs the counts of booking services and products to the console.
 - Planned phases after the landing page: Bookings flow on `/book` (services, availability, booking, checkout), Stores on `/shop` (products, cart, hosted checkout), Members login, then real content for About, Portfolio and Contact. Ask the user for content and requirements for each page before building it.
