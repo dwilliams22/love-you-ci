@@ -73,6 +73,8 @@ export interface BookingFlowState {
   payDeposit: boolean;
   /** Add-on groups (empty unless service.hasAddOns), the selection (quantity by add-on id), and its totals. */
   addOnGroups: AddOnGroup[];
+  /** Love You, Ci: true once the add-on groups request settled (or the service has none). */
+  addOnGroupsLoaded: boolean;
   addOns: AddOnSelection;
   /** Formatted extra price of the selected add-ons ("" when none). Shown, not yet booked — see INSTRUCTIONS. */
   addOnsTotal: string;
@@ -113,6 +115,8 @@ export interface BookingFlowStore {
   /** Only meaningful when service.deposit?.fullUpfrontAllowed; otherwise the deposit is mandatory. */
   setPayDeposit(payDeposit: boolean): void;
   toggleAddOn(id: string): void;
+  /** Love You, Ci: replace the selection (each id once) and reload times for the new length. */
+  setAddOnIds(ids: string[]): void;
   setAddOnQuantity(id: string, quantity: number): void;
   /** Whether `groupId` accepts another distinct add-on. */
   canSelectMore(groupId: string): boolean;
@@ -134,6 +138,8 @@ const readResourceParam = (): string | undefined => {
 export interface BookingFlowOptions {
   /** "week" (the shipped 7-day strip) or "month" (a calendar month per window). */
   window?: "week" | "month";
+  /** Love You, Ci: add-ons chosen before the calendar (e.g. from ?addons=); slots load with them. */
+  initialAddOnIds?: string[];
 }
 
 const firstOfMonth = (d: Date): Date => new Date(d.getFullYear(), d.getMonth(), 1);
@@ -158,7 +164,8 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
   let participants = 1;
   let payDeposit = !!service.deposit;
   let addOnGroups: AddOnGroup[] = [];
-  let addOns: AddOnSelection = {};
+  let addOnGroupsLoaded = !service.hasAddOns;
+  let addOns: AddOnSelection = Object.fromEntries((options.initialAddOnIds ?? []).map((id) => [id, 1]));
   let formFields: BookingFormField[] = [];
   let values: Record<string, string> = {};
   let booking = false;
@@ -176,6 +183,14 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
   const ctaState = (): CtaState => ctaStateOf(service, course?.full ?? false);
   const formComplete = () => formFields.every((f) => !f.required || (values[f.target] ?? "").trim().length > 0);
   const zoneForBooking = () => timeZone ?? requestZone ?? undefined;
+  const selectedAddOnIds = () => Object.keys(addOns).filter((id) => addOns[id] > 0);
+  // Booked add-ons need their group; quantity only for quantity-based (non-duration) add-ons
+  const bookedAddOns = () =>
+    addOnGroups.flatMap((g) =>
+      g.addOns
+        .filter((a) => addOns[a.id] > 0)
+        .map((a) => ({ id: a.id, groupId: g.id, ...(a.durationMinutes ? {} : { quantity: addOns[a.id] }) })),
+    );
 
   function getState(): BookingFlowState {
     if (snapshot) return snapshot;
@@ -200,6 +215,7 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
       maxParticipants: maxParticipants(service, selectedSlot),
       payDeposit,
       addOnGroups,
+      addOnGroupsLoaded,
       addOns,
       addOnsTotal: addOnsTotal(addOnGroups, addOns),
       addOnsMinutes: addOnsDuration(addOnGroups, addOns),
@@ -221,7 +237,7 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
     slots = null;
     selectedSlot = null;
     emit();
-    fetchSlots(service, { from: windowStart, days: windowDays, staffId, timeZone: requestZone })
+    fetchSlots(service, { from: windowStart, days: windowDays, staffId, timeZone: requestZone, addOnIds: selectedAddOnIds() })
       .then((page) => {
         if (!started || generation !== id) return; // superseded — drop it
         slots = page.slots;
@@ -241,7 +257,7 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
     if (!started || !showsNextAvailability(service)) return;
     const id = generation;
     nextAvailable = null;
-    fetchNextAvailableSlots(service, { staffId, timeZone: requestZone })
+    fetchNextAvailableSlots(service, { staffId, timeZone: requestZone, addOnIds: selectedAddOnIds() })
       .then((page) => {
         if (!started || generation !== id) return;
         nextAvailable = page.slots;
@@ -324,7 +340,7 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
         loadForZone();
       });
       fetchBookingForm(service.formId).then((f) => { if (started) { formFields = f; emit(); } });
-      if (service.hasAddOns) fetchAddOnGroups(service.id).then((g) => { if (started) { addOnGroups = g; emit(); } });
+      if (service.hasAddOns) fetchAddOnGroups(service.id).then((g) => { if (started) { addOnGroups = g; addOnGroupsLoaded = true; emit(); } });
     },
     stop() {
       started = false;
@@ -388,11 +404,19 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
     },
     toggleAddOn(id) {
       addOns = withAddOnQuantity(addOnGroups, addOns, id, addOns[id] > 0 ? 0 : 1);
+      loadSlots();
+      loadNextAvailable();
+    },
+    setAddOnIds(ids) {
+      addOns = Object.fromEntries(ids.map((id) => [id, 1]));
+      loadSlots();
+      loadNextAvailable();
       emit();
     },
     setAddOnQuantity(id, quantity) {
       addOns = withAddOnQuantity(addOnGroups, addOns, id, quantity);
-      emit();
+      loadSlots();
+      loadNextAvailable();
     },
     canSelectMore(groupId) {
       const group = addOnGroups.find((g) => g.id === groupId);
@@ -426,6 +450,7 @@ export function createBookingFlowStore(service: ServiceDetail, options: BookingF
           timeZone: zoneForBooking(),
           participants,
           depositSelected: service.deposit?.fullUpfrontAllowed ? payDeposit : undefined,
+          addOns: bookedAddOns(),
         });
         if (result.kind === "redirect") {
           window.location.href = result.url;

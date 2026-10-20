@@ -1,8 +1,30 @@
-import { useServices } from '../../hooks/bookings/useServices'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { AddOnsModal } from '../../components/booking/AddOnsModal'
 import { ServiceCard, ServiceCardSkeleton } from '../../components/booking/ServiceCard'
+import { useServices } from '../../hooks/bookings/useServices'
+import { fetchAddOnGroups } from '../../wix/bookings/booking'
+import type { AddOnGroup, ServiceSummary } from '../../wix/bookings/types'
+import { bookingPath } from './bookingPath'
+
+type Picking = { service: ServiceSummary; groups: AddOnGroup[] | null }
 
 export const ServicesPage = () => {
   const { services, hasMore, loadingMore, loadMore, error } = useServices({ syncUrl: false })
+  const navigate = useNavigate()
+  const [picking, setPicking] = useState<Picking | null>(null)
+
+  const openAddOns = (service: ServiceSummary) => {
+    setPicking({ service, groups: null })
+    fetchAddOnGroups(service.id).then((groups) =>
+      setPicking((p) => (p?.service.id === service.id ? { service, groups } : p)),
+    )
+  }
+
+  const continueTo = (service: ServiceSummary, addOnIds: string[]) => {
+    setPicking(null)
+    navigate(bookingPath(service.slug, addOnIds))
+  }
 
   return (
     <main className="py-[clamp(64px,8vw,112px)]">
@@ -25,7 +47,14 @@ export const ServicesPage = () => {
         ) : (
           <ul className="mt-[clamp(56px,7vw,96px)] grid grid-cols-3 gap-x-[clamp(24px,3vw,44px)] gap-y-20 bp-860:grid-cols-2 bp-560:grid-cols-1 bp-560:px-[6%]">
             {services
-              ? services.map((s, i) => <ServiceCard key={s.id} service={s} index={i} />)
+              ? services.map((s, i) => (
+                  <ServiceCard
+                    key={s.id}
+                    service={s}
+                    index={i}
+                    onBook={s.hasAddOns ? () => openAddOns(s) : undefined}
+                  />
+                ))
               : Array.from({ length: 3 }, (_, i) => <ServiceCardSkeleton key={i} />)}
           </ul>
         )}
@@ -38,6 +67,17 @@ export const ServicesPage = () => {
           </div>
         )}
       </div>
+
+      {picking && (
+        <AddOnsModal
+          service={picking.service}
+          groups={picking.groups}
+          initialSelected={[]}
+          onNext={(ids) => continueTo(picking.service, ids)}
+          // Closing continues without add-ons
+          onClose={() => continueTo(picking.service, [])}
+        />
+      )}
     </main>
   )
 }

@@ -1,5 +1,6 @@
 import { useEffect, type FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
+import { selectedAddOns } from '../../components/booking/selectedAddOns'
 import { ChevronRight } from 'lucide-react'
 import { BookingFormFields } from '../../components/booking/BookingFormFields'
 import { BookingSummary } from '../../components/booking/BookingSummary'
@@ -9,6 +10,7 @@ import { useBooking } from './bookingContext'
 export const DetailsPage = () => {
   const { service, flow } = useBooking()
   const navigate = useNavigate()
+  const { search } = useLocation()
 
   // Free / pay-later services complete without checkout; this is the only real success signal
   useEffect(() => {
@@ -16,7 +18,7 @@ export const DetailsPage = () => {
   }, [flow.confirmed, navigate, service.name])
 
   // Reloading this step loses the picked time; send the visitor back to pick one
-  if (!flow.selectedSlot) return <Navigate to=".." relative="path" replace />
+  if (!flow.selectedSlot) return <Navigate to={{ pathname: '..', search }} relative="path" replace />
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -45,7 +47,7 @@ export const DetailsPage = () => {
           <h2 id="details-heading" className="text-[0.75rem] font-semibold tracking-[0.28em] text-rose-deep">
             YOUR DETAILS
           </h2>
-          <Link to=".." relative="path" className="text-t-sm text-stone hover:text-rose-deep">
+          <Link to={{ pathname: '..', search }} relative="path" className="text-t-sm text-stone hover:text-rose-deep">
             Change date &amp; time
           </Link>
         </div>
@@ -61,7 +63,13 @@ export const DetailsPage = () => {
       </section>
 
       <div className="self-start">
-        <BookingSummary service={service} slot={flow.selectedSlot} timeZoneLabel={flow.timeZoneLabel}>
+        <BookingSummary
+          service={service}
+          slot={flow.selectedSlot}
+          timeZoneLabel={flow.timeZoneLabel}
+          addOns={selectedAddOns(flow)}
+          addOnsMinutes={flow.addOnsMinutes}
+        >
           <button
             type="submit"
             className="cta w-full cursor-pointer justify-center disabled:cursor-default disabled:opacity-40"

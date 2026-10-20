@@ -22,6 +22,7 @@ export type UseBookingFlow = BookingFlowState &
     | "setParticipants"
     | "setPayDeposit"
     | "toggleAddOn"
+    | "setAddOnIds"
     | "setAddOnQuantity"
     | "canSelectMore"
     | "loadMoreSessions"
@@ -51,6 +52,7 @@ export function useBookingFlow(service: ServiceDetail, options?: BookingFlowOpti
     setParticipants: store.setParticipants,
     setPayDeposit: store.setPayDeposit,
     toggleAddOn: store.toggleAddOn,
+    setAddOnIds: store.setAddOnIds,
     setAddOnQuantity: store.setAddOnQuantity,
     canSelectMore: store.canSelectMore,
     loadMoreSessions: store.loadMoreSessions,

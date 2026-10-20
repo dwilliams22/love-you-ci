@@ -5,6 +5,8 @@ import type { ServiceDetail } from '../../wix/bookings/types'
 export type BookingContext = {
   service: ServiceDetail
   flow: UseBookingFlow
+  // Reopens the add-ons modal (summary "Edit")
+  editAddOns: () => void
 }
 
 // Child routes (calendar, details) read the shared booking flow from the service layout

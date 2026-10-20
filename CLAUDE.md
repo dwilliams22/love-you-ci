@@ -164,8 +164,13 @@ Local changes to vendored files (re-apply if you ever re-copy them):
 - `wix/config.ts`: `WIX_CLIENT_ID` reads `import.meta.env.VITE_WIX_CLIENT_ID`.
 - `booking-core.ts` `checkoutRedirectRequest`: `thankYouPageUrl` is `/book/thank-you` and `postFlowUrl` (abandoned checkout) is `/book`.
 - `booking-flow-store.ts`: a `{ window: 'month' }` option adds `month`, `nextMonth()` and `prevMonth()`, and `jumpTo` follows the month.
+- **Add-ons** (the vendored template ships them display-only; we book them, verified live):
+  - `booking-core.ts`: `SlotsWindow.addOnIds` / `NextAvailableOptions.addOnIds` → Time Slots V2 `customerChoices.addOnIds`, so Wix returns slots already lengthened by add-on minutes. `BookingOptions.addOns` → Create Booking `bookedAddOns: [{ _id, groupId, quantity? }]`, where `quantity` is only for non-duration add-ons. `showsNextAvailability` no longer excludes add-on services.
+  - `booking-flow-store.ts`: `initialAddOnIds` option, `setAddOnIds(ids)` (reloads slots and next availability), `addOnGroupsLoaded`. `book()` sends `bookedAddOns`.
 - `services.ts` `fetchServices`: sorted by `sortOrder` ascending, which is the service order Ci sets in the Wix dashboard. Change the order there, not in code.
 - `useBookingFlow` / `useServices`: the store lives in lazy `useState` (React Compiler forbids reading refs during render). Remount with `key={service.id}` to switch services.
+
+Add-ons flow: "Book" on a card with `hasAddOns` opens `AddOnsModal` (native `<dialog>`) over `/book`. Next, or closing it, goes to `/book/:slug?addons=id1,id2` (`bookingPath.ts`). An **empty** `addons=` means "chose none", and a **missing** param makes the service page open the modal first (shared links). The summary's "Edit" reopens it, keeping the old choice on close. `Continue` and "Change date & time" preserve the query string. The class has no add-ons and skips the modal.
 
 Routes: `/book` (taped service cards), `/book/:slug` (`ServiceBookingLayout` loads the service and owns the one flow store; index is `SchedulePage` with the month calendar, times by Morning/Afternoon/Evening and the summary), `/book/:slug/details` (`DetailsPage`: schema-driven Wix form and the CTA; it redirects back to the calendar if no slot is picked), `/book/thank-you`.
 
@@ -180,6 +185,6 @@ Ci's setup (checked through the client ID, Oct 2026): 4 appointments (Natural, S
 
 Phone fields use `components/booking/PhoneField.tsx` (libphonenumber-js): a country picker that defaults to US, formats as you type, writes `''` until the number is valid (which gates Book) and then the E.164 number (`+14048675309`).
 
-Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). The paid return path to `/book/thank-you` has not been tested, because that needs a real payment.
+Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). Second live test (Oct 20, 2026): Natural Glam with Bottom Lashes (+5 min) and Mink Lashes. Slots came back 50 minutes long, and the checkout showed $130.00 ($115 + $15 add-ons), Pay Now $42 / Pay Later $88. It was abandoned unpaid. The paid return path to `/book/thank-you` has not been tested, because that needs a real payment.
 
 Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev, plus the production domain.

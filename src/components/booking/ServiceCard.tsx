@@ -8,13 +8,15 @@ import { depositLabel, metaLine, offeredDaysLabel } from './serviceMeta'
 type ServiceCardProps = {
   service: ServiceSummary
   index: number
+  // Intercepts a plain click (e.g. to open the add-ons modal); modified clicks still follow the link
+  onBook?: () => void
 }
 
 // Alternating tilt + tape angle, like the landing page's Our Looks cards
 const tiltClass = (index: number) =>
   index % 2 ? '[transform:rotate(1deg)] [--tape-rot:-3deg]' : '[transform:rotate(-1.2deg)] [--tape-rot:2deg]'
 
-export const ServiceCard = ({ service, index }: ServiceCardProps) => (
+export const ServiceCard = ({ service, index, onBook }: ServiceCardProps) => (
   <li className="group relative flex flex-col">
     <div className={`taped tape-rose aspect-[4/5] ${tiltClass(index)}`}>
       <div className="slot h-full">
@@ -33,7 +35,15 @@ export const ServiceCard = ({ service, index }: ServiceCardProps) => (
       )}
       <h2 className="font-display text-t-xl leading-tight">
         {/* Stretched link: the whole card is clickable */}
-        <Link to={`/book/${service.slug}`} className="after:absolute after:inset-0">
+        <Link
+          to={`/book/${service.slug}`}
+          className="after:absolute after:inset-0"
+          onClick={(e) => {
+            if (!onBook || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+            e.preventDefault()
+            onBook()
+          }}
+        >
           {service.name}
         </Link>
       </h2>

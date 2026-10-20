@@ -16,6 +16,7 @@ const service = {
   imageUrl: '',
   offeredDays: [],
   description: '',
+  hasAddOns: false,
 } as unknown as ServiceDetail
 
 const mocks = vi.hoisted(() => ({
@@ -43,6 +44,11 @@ const baseFlow = {
   confirmed: null,
   error: null,
   payDeposit: true,
+  addOnGroups: [],
+  addOnGroupsLoaded: true,
+  addOns: {},
+  addOnsMinutes: 0,
+  setAddOnIds: vi.fn(),
   setSelectedSlot: vi.fn(),
   nextMonth: vi.fn(),
   prevMonth: vi.fn(),

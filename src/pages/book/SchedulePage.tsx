@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
+import { selectedAddOns } from '../../components/booking/selectedAddOns'
 import { ChevronRight } from 'lucide-react'
 import { BookingSummary } from '../../components/booking/BookingSummary'
 import { MonthCalendar } from '../../components/booking/MonthCalendar'
@@ -12,8 +13,9 @@ const sectionLabel = 'text-[0.75rem] font-semibold tracking-[0.28em] text-rose-d
 const sectionHead = 'mb-8 flex h-12 items-center justify-between gap-4 border-b border-(--hair)'
 
 export const SchedulePage = () => {
-  const { service, flow } = useBooking()
+  const { service, flow, editAddOns } = useBooking()
   const navigate = useNavigate()
+  const { search } = useLocation()
   const [pickedDay, setPickedDay] = useState<string | null>(flow.selectedSlot?.dayKey ?? null)
 
   const days = flow.days
@@ -81,12 +83,19 @@ export const SchedulePage = () => {
       </section>
 
       <div className="bp-1080:col-span-2 bp-860:col-span-1">
-        <BookingSummary service={service} slot={flow.selectedSlot} timeZoneLabel={flow.timeZoneLabel}>
+        <BookingSummary
+          service={service}
+          slot={flow.selectedSlot}
+          timeZoneLabel={flow.timeZoneLabel}
+          addOns={selectedAddOns(flow)}
+          addOnsMinutes={flow.addOnsMinutes}
+          onEditAddOns={service.hasAddOns ? editAddOns : undefined}
+        >
           <button
             type="button"
             className="cta w-full cursor-pointer justify-center disabled:cursor-default disabled:opacity-40"
             disabled={!flow.selectedSlot}
-            onClick={() => navigate('details')}
+            onClick={() => navigate({ pathname: 'details', search })}
           >
             Continue <Icon icon={ChevronRight} size={16} />
           </button>

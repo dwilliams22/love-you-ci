@@ -34,4 +34,11 @@ vi.stubGlobal('matchMedia', (query: string) => ({
 }))
 vi.stubGlobal('CSS', { supports: () => true })
 Element.prototype.scrollBy = vi.fn()
+// jsdom has <dialog> but not its modal API
+HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+  this.setAttribute('open', '')
+}
+HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
+  this.removeAttribute('open')
+}
 window.scrollTo = vi.fn()

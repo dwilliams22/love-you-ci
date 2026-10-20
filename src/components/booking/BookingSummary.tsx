@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-import type { Slot, ServiceDetail } from '../../wix/bookings/types'
+import type { AddOn, Slot, ServiceDetail } from '../../wix/bookings/types'
 import { Icon } from '../ui/Icon'
 import { shortDayLabel } from './calendar'
 import { metaLine } from './serviceMeta'
@@ -10,13 +10,25 @@ type BookingSummaryProps = {
   service: ServiceDetail
   slot: Slot | null
   timeZoneLabel: string
+  addOns?: AddOn[]
+  addOnsMinutes?: number
+  // Shows an "Edit" link for add-ons (calendar step only)
+  onEditAddOns?: () => void
   children?: ReactNode
 }
 
 // Strip any HTML/markdown emphasis from the owner's description for plain display
 const plainText = (s: string) => s.replace(/<[^>]+>/g, ' ').replace(/\*\*/g, '').replace(/\s+/g, ' ').trim()
 
-export const BookingSummary = ({ service, slot, timeZoneLabel, children }: BookingSummaryProps) => {
+export const BookingSummary = ({
+  service,
+  slot,
+  timeZoneLabel,
+  addOns = [],
+  addOnsMinutes = 0,
+  onEditAddOns,
+  children,
+}: BookingSummaryProps) => {
   const [open, setOpen] = useState(false)
   const details = [service.tagLine, plainText(service.description)].filter(Boolean)
 
@@ -48,6 +60,35 @@ export const BookingSummary = ({ service, slot, timeZoneLabel, children }: Booki
       )}
 
       <dl className="mt-6 flex flex-col gap-4 border-t border-(--hair) pt-6 text-t-sm">
+        {(service.hasAddOns || addOns.length > 0) && (
+          <div>
+            <dt className="flex items-baseline justify-between text-stone">
+              Add-ons
+              {onEditAddOns && (
+                <button
+                  type="button"
+                  className="cursor-pointer text-ink underline decoration-rose underline-offset-4 hover:text-rose-deep"
+                  onClick={onEditAddOns}
+                >
+                  Edit
+                </button>
+              )}
+            </dt>
+            {addOns.length ? (
+              <>
+                {addOns.map((a) => (
+                  <dd key={a.id} className="mt-0.5 flex justify-between gap-4 text-[0.9375rem] font-normal">
+                    <span>{a.name}</span>
+                    {a.price && <span className="tabular-nums">{a.price}</span>}
+                  </dd>
+                ))}
+                {addOnsMinutes > 0 && <dd className="text-stone">Adds {addOnsMinutes} min to your appointment</dd>}
+              </>
+            ) : (
+              <dd className="mt-0.5">None</dd>
+            )}
+          </div>
+        )}
         <div>
           <dt className="text-stone">Date &amp; time</dt>
           <dd className="mt-0.5 text-[0.9375rem] font-normal">

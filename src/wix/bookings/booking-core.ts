@@ -87,7 +87,12 @@ export interface SlotsWindow {
   staffId?: string;
   /** A follow-up page (from the previous response's cursor). */
   cursor?: string;
+  /** Love You, Ci: selected add-ons — Wix lengthens appointment slots by their minutes (customerChoices). */
+  addOnIds?: string[];
 }
+
+/** Love You, Ci: Time Slots V2 `customerChoices` for the selected add-ons (omitted when none). */
+const addOnChoices = (addOnIds?: string[]): Raw => (addOnIds?.length ? { customerChoices: { addOnIds } } : {});
 
 /** [start of `from`'s day, start of the day `days` later) as the local strings both time-slot APIs take. */
 export function slotsRange({ from = new Date(), days = 7 }: SlotsWindow): { fromLocalDate: string; toLocalDate: string } {
@@ -101,10 +106,11 @@ export function slotsRange({ from = new Date(), days = 7 }: SlotsWindow): { from
  * time (the transport follows `cursorPagingMetadata.cursors.next`). No `timeZone` key when none is
  * resolved — the server computes in the business zone and echoes it.
  */
-export function appointmentSlotsRequest(serviceId: string, { timeZone, staffId, cursor, ...window }: SlotsWindow): Raw {
+export function appointmentSlotsRequest(serviceId: string, { timeZone, staffId, cursor, addOnIds, ...window }: SlotsWindow): Raw {
   return {
     serviceId,
     ...slotsRange(window),
+    ...addOnChoices(addOnIds),
     ...(timeZone ? { timeZone } : {}),
     bookable: true,
     cursorPaging: cursor ? { limit: SLOTS_PAGE_LIMIT, cursor } : { limit: SLOTS_PAGE_LIMIT },
@@ -137,6 +143,8 @@ export interface NextAvailableOptions {
   limit?: number;
   staffId?: string;
   timeZone?: string;
+  /** Love You, Ci: selected add-ons (appointments), so the next opening fits the longer session. */
+  addOnIds?: string[];
 }
 
 /** Start of today → end of the last day of the month NEXT_AVAILABLE_MONTHS ahead (Wix's scan window). */
@@ -148,7 +156,7 @@ export function nextAvailableRange(now = new Date()): { fromLocalDate: string; t
 export const clampNextAvailable = (n: number | undefined): number => Math.min(Math.max(n ?? NEXT_AVAILABLE_DEFAULT, 1), NEXT_AVAILABLE_MAX);
 
 /** The next-availability body: the same two APIs, bookable slots only, the first `limit` of them. */
-export function nextAvailableRequest(service: Pick<ServiceDetail, "id" | "type">, { limit, staffId, timeZone }: NextAvailableOptions = {}): Raw {
+export function nextAvailableRequest(service: Pick<ServiceDetail, "id" | "type">, { limit, staffId, timeZone, addOnIds }: NextAvailableOptions = {}): Raw {
   const cursorPaging = { limit: clampNextAvailable(limit) };
   if (service.type === "CLASS") {
     return {
@@ -163,6 +171,7 @@ export function nextAvailableRequest(service: Pick<ServiceDetail, "id" | "type">
   return {
     serviceId: service.id,
     ...nextAvailableRange(),
+    ...addOnChoices(addOnIds),
     ...(timeZone ? { timeZone } : {}),
     bookable: true,
     cursorPaging,
@@ -171,9 +180,12 @@ export function nextAvailableRequest(service: Pick<ServiceDetail, "id" | "type">
   };
 }
 
-/** Next-availability is shown only where a plain time is the whole choice: not VARIED pricing, add-ons, or a course. */
+/**
+ * Next-availability is shown only where a plain time is the whole choice: not VARIED pricing or a course.
+ * Love You, Ci: add-on services are included — the request carries the chosen add-ons (customerChoices).
+ */
 export const showsNextAvailability = (service: Pick<ServiceDetail, "type" | "rateType" | "hasAddOns">): boolean =>
-  service.type !== "COURSE" && service.rateType !== "VARIED" && !service.hasAddOns;
+  service.type !== "COURSE" && service.rateType !== "VARIED";
 
 /** A slot's identity: start|end|location. The same time at two locations is two slots; two staff at one time is one. */
 export const slotKey = (raw: Raw): string => `${raw.localStartDate ?? ""}|${raw.localEndDate ?? ""}|${rawId(raw.location)}`;
@@ -483,6 +495,8 @@ export interface BookingOptions {
   participants?: number;
   /** Pay the deposit only (true) or the full price now (false); sent only when the service lets the visitor choose. */
   depositSelected?: boolean;
+  /** Love You, Ci: chosen add-ons → Create Booking `bookedAddOns` (quantity only for quantity-based add-ons). */
+  addOns?: { id: string; groupId: string; quantity?: number }[];
 }
 
 /** A slot's location type → the booking's: BUSINESS → OWNER_BUSINESS, CUSTOMER → CUSTOM, CUSTOM → OWNER_CUSTOM. */
@@ -505,13 +519,19 @@ export function bookingLocationType(type: ServiceLocation["type"] | undefined): 
 export function bookingRequest(
   service: Pick<ServiceDetail, "id" | "type" | "paymentOption" | "scheduleId" | "deposit">,
   slot: Slot | null,
-  { staffId, timeZone = defaultTimeZone(), idKey = "id", participants = 1, depositSelected }: BookingOptions = {},
+  { staffId, timeZone = defaultTimeZone(), idKey = "id", participants = 1, depositSelected, addOns = [] }: BookingOptions = {},
 ): Raw {
   const deposit =
     depositSelected !== undefined && service.paymentOption === "ONLINE" && service.deposit && service.deposit.fullUpfrontAllowed
       ? { depositSelected }
       : {};
-  const base = { selectedPaymentOption: service.paymentOption, ...deposit, totalParticipants: Math.max(1, Math.floor(participants)) };
+  const bookedAddOns = addOns.map((a) => ({ [idKey]: a.id, groupId: a.groupId, ...(a.quantity ? { quantity: a.quantity } : {}) }));
+  const base = {
+    selectedPaymentOption: service.paymentOption,
+    ...deposit,
+    totalParticipants: Math.max(1, Math.floor(participants)),
+    ...(bookedAddOns.length ? { bookedAddOns } : {}),
+  };
   if (service.type === "COURSE" || !slot) {
     if (!service.scheduleId) throw new Error("This course has no schedule to book.");
     return { ...base, bookedEntity: { schedule: { scheduleId: service.scheduleId, serviceId: service.id, timezone: timeZone } } };
