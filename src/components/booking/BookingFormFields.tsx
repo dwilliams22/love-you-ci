@@ -1,4 +1,5 @@
 import type { BookingFormField } from '../../wix/bookings/types'
+import { PhoneField } from './PhoneField'
 
 type BookingFormFieldsProps = {
   fields: BookingFormField[]
@@ -22,7 +23,7 @@ const autoComplete: Record<string, string> = {
 }
 
 const control =
-  'mt-2 w-full border border-(--hair) bg-paper px-4 py-3 text-t-base font-normal transition-colors duration-300 outline-none focus:border-ink focus-visible:outline-none'
+  'w-full border border-(--hair) bg-paper px-4 py-3 text-t-base font-normal transition-colors duration-300 outline-none focus:border-ink focus-visible:outline-none'
 
 // Owner-written labels can carry "**bold**" and blank-line notes; first line is the label, the rest is help text
 const splitLabel = (label: string) => {
@@ -46,10 +47,19 @@ export const BookingFormFields = ({ fields, values, onChange }: BookingFormField
               {help}
             </p>
           )}
-          {f.options?.length ? (
+          {f.type === 'PHONE' ? (
+            <PhoneField
+              id={id}
+              value={values[f.target] ?? ''}
+              required={f.required}
+              describedBy={help ? `${id}-help` : undefined}
+              inputClassName={control}
+              onChange={(v) => onChange(f.target, v)}
+            />
+          ) : f.options?.length ? (
             <select
               id={id}
-              className={control}
+              className={`mt-2 ${control}`}
               value={values[f.target] ?? ''}
               required={f.required}
               onChange={(e) => onChange(f.target, e.target.value)}
@@ -62,7 +72,7 @@ export const BookingFormFields = ({ fields, values, onChange }: BookingFormField
           ) : (
             <input
               id={id}
-              className={control}
+              className={`mt-2 ${control}`}
               type={inputType[f.type]}
               autoComplete={autoComplete[f.target]}
               aria-describedby={help ? `${id}-help` : undefined}
