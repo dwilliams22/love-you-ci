@@ -52,19 +52,6 @@ const IconBadge = ({ icon, size = 'size-12' }: { icon: IconComponent; size?: str
 
 export const BookingPolicy = () => (
   <div className="mt-[clamp(48px,6vw,80px)] flex flex-col gap-[clamp(56px,7vw,96px)]">
-    {/* Highlighted notes */}
-    <ul className="grid grid-cols-3 gap-px bg-(--hair) bp-860:grid-cols-1" aria-label="Before you book">
-      {keyNotes.map((note) => (
-        <li key={note.id} className="flex gap-4 bg-mist p-[clamp(20px,2.5vw,32px)]">
-          <IconBadge icon={NOTE_ICONS[note.id]} size="size-11" />
-          <div>
-            <p className="text-[0.9375rem] font-medium tracking-[0.02em]">{note.title}</p>
-            <p className="mt-1 text-t-sm leading-[1.6] text-stone">{note.text}</p>
-          </div>
-        </li>
-      ))}
-    </ul>
-
     {/* Hours, studio, add-ons */}
     <div className="grid grid-cols-3 gap-[clamp(32px,4vw,64px)] border-y border-(--hair) py-[clamp(32px,4vw,48px)] bp-860:grid-cols-1">
       <section aria-labelledby="hours-heading">
@@ -150,6 +137,19 @@ export const BookingPolicy = () => (
         ))}
       </ol>
     </section>
+
+    {/* Highlighted notes */}
+    <ul className="grid grid-cols-3 gap-px bg-(--hair) bp-860:grid-cols-1" aria-label="Before you book">
+      {keyNotes.map((note) => (
+        <li key={note.id} className="flex gap-4 bg-mist p-[clamp(20px,2.5vw,32px)]">
+          <IconBadge icon={NOTE_ICONS[note.id]} size="size-11" />
+          <div>
+            <p className="text-[0.9375rem] font-medium tracking-[0.02em]">{note.title}</p>
+            <p className="mt-1 text-t-sm leading-[1.6] text-stone">{note.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
 
     {/* Selfies */}
     <section
