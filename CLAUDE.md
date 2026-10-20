@@ -175,6 +175,10 @@ Rules:
 - Remaining spots ("N left") show only for classes.
 - Ci's form text uses `**bold**` and blank-line notes. The first line is the label and the rest is help text (`BookingFormFields`).
 
-Ci's setup (checked through the client ID, Oct 2026): 4 appointments (Natural, Soft, Full Glam, Sunday Appointment) with a $42 deposit, and 1 class (Flawless Glam 1:1, $181 deposit). Location is "Upon Approval". The default booking form had a **required multi-line address** field, which the vendored form layer can't render. The decision was to remove it in Wix. Before a live checkout test, re-check with the form-schema query that it is gone from both forms (`00000000-…` default and `22dd2e21-…` class).
+Ci's setup (checked through the client ID, Oct 2026): 4 appointments (Natural, Soft, Full Glam, Sunday Appointment) with a $42 deposit, and 1 class (Flawless Glam 1:1, $181 deposit). Location is "Upon Approval". The forms' `address` field (`BOOKINGS_ADDRESS`) shows as required in the schema, but it is a built-in Bookings field that only applies to services held at the client's location. Ci's services aren't, so the vendored form layer skipping it is correct. The live test confirmed it: a booking without an address was accepted. Wix's checkout collects the billing address itself.
+
+Phone fields use `components/booking/PhoneField.tsx` (libphonenumber-js): a country picker that defaults to US, formats as you type, writes `''` until the number is valid (which gates Book) and then the E.164 number (`+14048675309`).
+
+Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). The paid return path to `/book/thank-you` has not been tested, because that needs a real payment.
 
 Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev, plus the production domain.
