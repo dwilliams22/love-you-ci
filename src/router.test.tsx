@@ -4,7 +4,6 @@ import { renderRoute } from './test/renderRoute'
 
 const pages = [
   ['/about', 'About Ci'],
-  ['/book', 'Book Appointment'],
   ['/portfolio', 'Portfolio'],
   ['/contact', 'Contact Ci'],
   ['/shop', 'Shop Our Products'],

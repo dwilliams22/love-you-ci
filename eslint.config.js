@@ -19,4 +19,12 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // Vendored Wix Headless data layer (copied from wix-headless-templates); keep it as shipped
+    files: ['src/wix/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
 ])
