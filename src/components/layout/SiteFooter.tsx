@@ -7,7 +7,7 @@ import { Cta } from '../ui/Cta'
 import { ICON_STROKE } from '../ui/Icon'
 
 const socialClass =
-  'grid size-11 place-items-center rounded-full border border-(--hair-light) text-[1.25rem] transition-[border-color,color] duration-300 hover:border-rose hover:text-rose'
+  'grid size-11 place-items-center rounded-[50%] border border-(--hair-light) text-[1.25rem] [transition:border-color_0.3s,color_0.3s] hover:border-rose hover:text-rose'
 
 export const SiteFooter = () => (
   <footer className="bg-ink pt-[clamp(80px,10vw,120px)] pb-8 text-center text-paper" id="contact">
@@ -56,7 +56,7 @@ export const SiteFooter = () => (
         </a>
       </div>
       <p className="text-[0.8125rem] text-stone-light">
-        &copy; {new Date().getFullYear()} by Love You, Ci.
+        &copy; <span>{new Date().getFullYear()}</span> by Love You, Ci.
       </p>
     </div>
   </footer>

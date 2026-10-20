@@ -8,7 +8,7 @@ export const Hero = () => (
   >
     <div className="flex flex-col items-start justify-center py-[clamp(48px,7vw,96px)] pr-(--gutter) pl-(--edge) bp-860:pt-14 bp-860:pb-12 bp-860:pl-(--gutter)">
       <h1
-        className="hero-rise mb-7 grid justify-items-start leading-none font-normal"
+        className="hero-rise mb-7 grid justify-items-start text-[2em] leading-none font-normal"
         id="hero-title"
         style={{ '--i': 0 }}
       >

@@ -7,7 +7,7 @@ import { useCarousel } from '../../hooks/useCarousel'
 const looks = ['Look 1', 'Look 2', 'Look 3', 'Look 4', 'Look 5', 'Look 6', 'Look 7']
 
 const arrowClass =
-  'grid size-12 cursor-pointer place-items-center border border-ink bg-transparent text-[1.25rem] [transition:background_0.3s_var(--ease-brand),color_0.3s_var(--ease-brand),opacity_0.3s] enabled:hover:bg-ink enabled:hover:text-paper enabled:active:scale-[0.96] disabled:cursor-default disabled:opacity-30 bp-560:size-11'
+  'grid size-12 cursor-pointer px-1.5 py-px place-items-center border border-ink bg-transparent text-[1.25rem] [transition:background_0.3s_var(--ease-brand),color_0.3s_var(--ease-brand),opacity_0.3s] enabled:hover:bg-ink enabled:hover:text-paper enabled:active:scale-[0.96] disabled:cursor-default disabled:opacity-30 bp-560:size-11'
 
 export const Looks = () => {
   const { trackRef, atStart, atEnd, scroll, onKeyDown } = useCarousel()

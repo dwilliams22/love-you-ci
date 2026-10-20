@@ -213,6 +213,8 @@
     font-size: var(--text-t-sm);
     padding-left: clamp(18px, 2.4vw, 34px);
     border-left: 1px solid var(--hair);
+    text-align: start;
+    cursor: pointer;
   }
   .menu-btn {
     display: none;
@@ -221,6 +223,7 @@
     height: 44px;
     place-items: center;
     border: 0;
+    padding: 1px 6px;
     background: none;
     font-size: 1.5rem;
     cursor: pointer;
@@ -230,6 +233,8 @@
     align-items: center;
     gap: 8px;
     color: var(--color-stone);
+    text-align: start;
+    cursor: pointer;
   }
   @media (max-width: 1080px) {
     .nav,
@@ -256,7 +261,6 @@
       width: 100%;
       padding-block: 14px;
       border-bottom: 1px solid var(--hair);
-      text-align: left;
     }
     .nav.open .nav-link::after {
       display: none;
