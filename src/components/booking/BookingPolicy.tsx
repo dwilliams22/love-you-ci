@@ -164,16 +164,18 @@ export const BookingPolicy = () => (
         Selfies
       </span>
       <div className="wrap grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[clamp(48px,8vw,128px)] bp-560:grid-cols-1 bp-560:justify-items-center bp-560:text-center">
-        <figure className="taped tape-rose bg-paper p-3 pb-0 [transform:rotate(-3deg)] [--tape-rot:4deg] bp-560:order-2">
+        {/* Polaroid proportions: square photo, thin even sides/top, deep bottom strip */}
+        <figure className="taped tape-rose w-[clamp(230px,22vw,300px)] bg-paper px-[6%] pt-[6%] [transform:rotate(-3deg)] [--tape-rot:4deg] bp-560:order-2">
           <img
             src={selfie}
             alt="A client's finished glam selfie"
             width={334}
             height={700}
             loading="lazy"
-            className="w-[clamp(150px,15vw,210px)]"
+            // The source is a tall phone screen; frame the face (eyes to lips)
+            className="aspect-square w-full object-cover object-[50%_41%]"
           />
-          <figcaption className="rose-gold-text py-3 text-center font-script text-[1.75rem] leading-none">
+          <figcaption className="rose-gold-text pt-[9%] pb-[11%] text-center font-script text-[clamp(1.75rem,2.4vw,2.25rem)] leading-none">
             @{instagramHandle}
           </figcaption>
         </figure>
