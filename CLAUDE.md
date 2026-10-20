@@ -172,6 +172,8 @@ Local changes to vendored files (re-apply if you ever re-copy them):
 
 Add-ons flow: "Book" on a card with `hasAddOns` opens `AddOnsModal` (native `<dialog>`) over `/book`. Next, or closing it, goes to `/book/:slug?addons=id1,id2` (`bookingPath.ts`). An **empty** `addons=` means "chose none", and a **missing** param makes the service page open the modal first (shared links). The summary's "Edit" reopens it, keeping the old choice on close. `Continue` and "Change date & time" preserve the query string. The class has no add-ons and skips the modal.
 
+Booking policy: `/book` shows `components/booking/BookingPolicy.tsx` between the page header and the services: key notes, hours/studio/add-on prices, the 7 policy rules with Lucide icons, and a "Tag us in your Selfies" panel using `assets/selfie-phone.jpg` (cropped from Ci's graphic; `mix-blend-lighten` blends its black into the ink band). **All wording lives in `src/content/bookingPolicy.ts`**, transcribed word-for-word from her policy graphic. Only the short rule titles are ours. The booking summary's Location now shows the studio address plus a suite-number note.
+
 Routes: `/book` (taped service cards), `/book/:slug` (`ServiceBookingLayout` loads the service and owns the one flow store; index is `SchedulePage` with the month calendar, times by Morning/Afternoon/Evening and the summary), `/book/:slug/details` (`DetailsPage`: schema-driven Wix form and the CTA; it redirects back to the calendar if no slot is picked), `/book/thank-you`.
 
 Rules:

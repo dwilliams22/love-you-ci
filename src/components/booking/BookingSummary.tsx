@@ -4,6 +4,7 @@ import type { AddOn, Slot, ServiceDetail } from '../../wix/bookings/types'
 import { Icon } from '../ui/Icon'
 import { shortDayLabel } from './calendar'
 import { metaLine } from './serviceMeta'
+import { studioAddress } from '../../content/bookingPolicy'
 import type { ReactNode } from 'react'
 
 type BookingSummaryProps = {
@@ -104,7 +105,10 @@ export const BookingSummary = ({
         )}
         <div>
           <dt className="text-stone">Location</dt>
-          <dd className="mt-0.5">Shared upon approval</dd>
+          <dd className="mt-0.5 text-[0.9375rem] font-normal">
+            {studioAddress.street}, {studioAddress.cityLine}
+          </dd>
+          <dd className="text-stone">Suite number sent in your confirmation email</dd>
         </div>
       </dl>
 

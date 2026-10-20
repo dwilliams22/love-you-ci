@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { ChevronDown } from 'lucide-react'
+import { Icon } from '../../components/ui/Icon'
 import { AddOnsModal } from '../../components/booking/AddOnsModal'
+import { BookingPolicy } from '../../components/booking/BookingPolicy'
 import { ServiceCard, ServiceCardSkeleton } from '../../components/booking/ServiceCard'
 import { useServices } from '../../hooks/bookings/useServices'
 import { fetchAddOnGroups } from '../../wix/bookings/booking'
@@ -36,7 +39,16 @@ export const ServicesPage = () => {
           <p className="mt-6 text-t-lg leading-[1.55] text-stone">
             Pick a service to see available dates and times. A deposit secures your appointment.
           </p>
+          <a href="#services" className="text-link">
+            See services <Icon icon={ChevronDown} size={15} />
+          </a>
         </header>
+
+        <BookingPolicy />
+
+        <h2 id="services" className="mt-[clamp(72px,9vw,120px)] scroll-mt-[calc(var(--bar)+24px)] font-display text-t-2xl leading-none">
+          Services
+        </h2>
 
         {error && services?.length === 0 ? (
           <p className="mt-16 text-stone" role="alert">
@@ -45,7 +57,7 @@ export const ServicesPage = () => {
         ) : services?.length === 0 ? (
           <p className="mt-16 text-stone">No services are open for booking right now. Please check back soon.</p>
         ) : (
-          <ul className="mt-[clamp(56px,7vw,96px)] grid grid-cols-3 gap-x-[clamp(24px,3vw,44px)] gap-y-20 bp-860:grid-cols-2 bp-560:grid-cols-1 bp-560:px-[6%]">
+          <ul className="mt-[clamp(40px,5vw,64px)] grid grid-cols-3 gap-x-[clamp(24px,3vw,44px)] gap-y-20 bp-860:grid-cols-2 bp-560:grid-cols-1 bp-560:px-[6%]">
             {services
               ? services.map((s, i) => (
                   <ServiceCard

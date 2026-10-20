@@ -71,11 +71,23 @@ describe('booking flow', () => {
     await waitFor(() => expect(document.title).toBe('Book Appointment | Love You, Ci'))
   })
 
+  it('shows the booking policy above the services', async () => {
+    renderRoute('/book')
+    const policy = screen.getByRole('heading', { level: 2, name: 'Booking Policy' })
+    const services = screen.getByRole('heading', { level: 2, name: 'Services' })
+    // Policy comes first in the document
+    expect(policy.compareDocumentPosition(services) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(screen.getAllByRole('listitem').length).toBeGreaterThanOrEqual(7)
+    expect(screen.getByText('Books open monthly on the 20th of each month at 5pm.')).toBeInTheDocument()
+    expect(screen.getByText(/2323 Lake Club Drive/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '@loveyouci' })).toHaveAttribute('href', 'https://www.instagram.com/loveyouci')
+  })
+
   it('shows the service header and a disabled Continue until a time is picked', async () => {
     renderRoute('/book/soft-glam')
     expect(await screen.findByRole('heading', { level: 1, name: 'Soft Glam' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Continue/ })).toBeDisabled()
-    expect(screen.getByText('Shared upon approval')).toBeInTheDocument()
+    expect(screen.getByText('2323 Lake Club Drive, Columbus, OH 43232')).toBeInTheDocument()
   })
 
   it('shows a not-found state for an unknown service', async () => {
