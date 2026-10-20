@@ -51,6 +51,9 @@ export async function fetchServices({ limit = SERVICES_PAGE_SIZE, offset = 0, ca
     .queryServices({ conditionalFields: SERVICES_CONDITIONAL_FIELDS as any })
     .eq("appId", BOOKINGS_APP_ID)
     .eq("hidden", false)
+    // Love You, Ci: the owner's order from the Wix dashboard (Services V2 sortOrder), not creation date.
+    // The API accepts it (verified live); the SDK's sortable-field typings just omit it.
+    .ascending("sortOrder" as any)
     .limit(limit)
     .skip(offset);
   if (categoryId) query = query.eq("category.id", categoryId);

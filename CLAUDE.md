@@ -164,6 +164,7 @@ Local changes to vendored files (re-apply if you ever re-copy them):
 - `wix/config.ts`: `WIX_CLIENT_ID` reads `import.meta.env.VITE_WIX_CLIENT_ID`.
 - `booking-core.ts` `checkoutRedirectRequest`: `thankYouPageUrl` is `/book/thank-you` and `postFlowUrl` (abandoned checkout) is `/book`.
 - `booking-flow-store.ts`: a `{ window: 'month' }` option adds `month`, `nextMonth()` and `prevMonth()`, and `jumpTo` follows the month.
+- `services.ts` `fetchServices`: sorted by `sortOrder` ascending, which is the service order Ci sets in the Wix dashboard. Change the order there, not in code.
 - `useBookingFlow` / `useServices`: the store lives in lazy `useState` (React Compiler forbids reading refs during render). Remount with `key={service.id}` to switch services.
 
 Routes: `/book` (taped service cards), `/book/:slug` (`ServiceBookingLayout` loads the service and owns the one flow store; index is `SchedulePage` with the month calendar, times by Morning/Afternoon/Evening and the summary), `/book/:slug/details` (`DetailsPage`: schema-driven Wix form and the CTA; it redirects back to the calendar if no slot is picked), `/book/thank-you`.
