@@ -149,8 +149,32 @@ Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 ## Wix Headless
 
 - Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`.
-- `src/lib/wix.ts` exports one shared client from `createClient` with `OAuthStrategy({ clientId: import.meta.env.VITE_WIX_CLIENT_ID, tokens })`. Visitor tokens are kept in localStorage (wrap reads and writes in try/catch) and reused across reloads.
+- **One auth seam:** `src/wix/sdk.ts` (`wixModule(module)`, `wixFetch(path)`) builds the single OAuth visitor client from `src/wix/config.ts` (`VITE_WIX_CLIENT_ID`) and persists tokens in localStorage. Every Wix call goes through it; never create another client. `src/lib/wix.ts` only holds the dev smoke test.
 - `VITE_WIX_CLIENT_ID` is typed in `src/vite-env.d.ts`.
-- The Wix site ("My Site 1", `fbd9c05b-586a-4fe0-b1ee-56aa493280c0`) has Bookings and Stores installed. Stores is on **Catalog V3**: use `productsV3` and V3 recipes only, never V1 `products`.
+- Ci's Wix site belongs to **her** Wix account. The Wix MCP tools are currently logged into a different account (it only shows "My Site 1", an unrelated Free/Draft site), so **don't trust MCP site context** for her site until the MCP is re-authenticated with her credentials. Query her site through `VITE_WIX_CLIENT_ID` instead (a visitor client in a throwaway node script with `node --env-file=.env.local`).
+- Stores catalog version on her site is **unconfirmed**: both `productsV3` and V1 `products` queries answer. Settle this before the Shop phase.
 - In dev, when `VITE_WIX_CLIENT_ID` is set, `main.tsx` runs `wixSmokeTest()`, which logs the counts of booking services and products to the console.
-- Planned phases after the landing page: Bookings flow on `/book` (services, availability, booking, checkout), Stores on `/shop` (products, cart, hosted checkout), Members login, then real content for About, Portfolio and Contact. Ask the user for content and requirements for each page before building it.
+- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), Stores on `/shop` (products, cart, hosted checkout), Members login, then real content for About, Portfolio and Contact. Ask the user for content and requirements for each page before building it.
+
+## Bookings (feat/bookings-flow)
+
+Built on Wix's verified headless bookings code, vendored from the `wix-headless-templates` skill (`bookings/app`) into `src/wix/bookings/*` and `src/hooks/bookings/*`. **Booking logic only goes through those exports** (`useBookingFlow`, `useServices`, `fetchServiceBySlug`). Never hand-build bookings, carts or checkout URLs. The skill's `INSTRUCTIONS.md` is the contract. The vendored files are exempt from `no-explicit-any` in `eslint.config.js`.
+
+Local changes to vendored files (re-apply if you ever re-copy them):
+- `wix/config.ts`: `WIX_CLIENT_ID` reads `import.meta.env.VITE_WIX_CLIENT_ID`.
+- `booking-core.ts` `checkoutRedirectRequest`: `thankYouPageUrl` is `/book/thank-you` and `postFlowUrl` (abandoned checkout) is `/book`.
+- `booking-flow-store.ts`: a `{ window: 'month' }` option adds `month`, `nextMonth()` and `prevMonth()`, and `jumpTo` follows the month.
+- `useBookingFlow` / `useServices`: the store lives in lazy `useState` (React Compiler forbids reading refs during render). Remount with `key={service.id}` to switch services.
+
+Routes: `/book` (taped service cards), `/book/:slug` (`ServiceBookingLayout` loads the service and owns the one flow store; index is `SchedulePage` with the month calendar, times by Morning/Afternoon/Evening and the summary), `/book/:slug/details` (`DetailsPage`: schema-driven Wix form and the CTA; it redirects back to the calendar if no slot is picked), `/book/thank-you`.
+
+Rules:
+- The CTA label comes from `ctaState` plus the deposit ("Book · $42 deposit"). Gate it on `canBook` and show `flow.error`.
+- Arriving at `/book/thank-you` is **not** proof of payment. The copy points to the confirmation email and never says "confirmed".
+- Don't write policy or copy Ci didn't supply (balances, guarantees, cancellation terms).
+- Remaining spots ("N left") show only for classes.
+- Ci's form text uses `**bold**` and blank-line notes. The first line is the label and the rest is help text (`BookingFormFields`).
+
+Ci's setup (checked through the client ID, Oct 2026): 4 appointments (Natural, Soft, Full Glam, Sunday Appointment) with a $42 deposit, and 1 class (Flawless Glam 1:1, $181 deposit). Location is "Upon Approval". The default booking form had a **required multi-line address** field, which the vendored form layer can't render. The decision was to remove it in Wix. Before a live checkout test, re-check with the form-schema query that it is gone from both forms (`00000000-…` default and `22dd2e21-…` class).
+
+Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev, plus the production domain.
