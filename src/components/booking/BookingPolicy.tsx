@@ -13,7 +13,7 @@ import {
   UserX,
   Wallet,
 } from 'lucide-react'
-import selfie from '../../assets/selfie-phone.jpg'
+import selfie from '../../assets/selfie.jpg'
 import {
   addOnPrices,
   businessHours,
@@ -151,38 +151,52 @@ export const BookingPolicy = () => (
       ))}
     </ul>
 
-    {/* Selfies */}
+    {/* Selfies: a full-bleed mist band that echoes the landing page (ghost word + taped photo) */}
     <section
       aria-labelledby="selfies-heading"
-      className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[clamp(28px,5vw,72px)] bg-ink px-[clamp(24px,5vw,72px)] py-[clamp(32px,4vw,48px)] text-paper bp-560:grid-cols-1 bp-560:justify-items-center bp-560:text-center"
+      className="relative isolate mx-[calc(50%-50vw)] overflow-clip bg-mist py-[clamp(72px,9vw,128px)]"
     >
-      {/* Black photo background blends into the ink band */}
-      <img
-        src={selfie}
-        alt="A client's finished look shown on a phone"
-        width={520}
-        height={870}
-        loading="lazy"
-        className="w-[clamp(140px,16vw,200px)] mix-blend-lighten"
-      />
-      <div>
-        <h2 id="selfies-heading" className="font-display text-t-xl tracking-[0.04em]">
-          TAG US IN YOUR{' '}
-          <span className="rose-gold-text block px-[0.1em] font-script text-[clamp(3.5rem,7vw,5.5rem)] leading-[1.1] tracking-normal">
-            Selfies!
-          </span>
-        </h2>
-        <p className="mt-3 max-w-[28rem] text-[0.9375rem] leading-[1.65] text-stone-light">
-          We love seeing your final looks. Tag us on Instagram @{instagramHandle} to be featured!
-        </p>
-        <a
-          href={`https://www.instagram.com/${instagramHandle}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 inline-flex items-center gap-2 text-[0.9375rem] font-medium tracking-[0.04em] text-paper underline decoration-rose underline-offset-4 hover:text-rose"
-        >
-          <InstagramIcon size={18} strokeWidth={ICON_STROKE} />@{instagramHandle}
-        </a>
+      <span
+        className="pointer-events-none absolute -right-[0.04em] -bottom-[0.2em] -z-10 font-display text-t-ghost leading-none text-paper select-none [--px:-60px]"
+        data-parallax
+        aria-hidden
+      >
+        Selfies
+      </span>
+      <div className="wrap grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[clamp(48px,8vw,128px)] bp-560:grid-cols-1 bp-560:justify-items-center bp-560:text-center">
+        <figure className="taped tape-rose bg-paper p-3 pb-0 [transform:rotate(-3deg)] [--tape-rot:4deg] bp-560:order-2">
+          <img
+            src={selfie}
+            alt="A client's finished glam selfie"
+            width={334}
+            height={700}
+            loading="lazy"
+            className="w-[clamp(150px,15vw,210px)]"
+          />
+          <figcaption className="rose-gold-text py-3 text-center font-script text-[1.75rem] leading-none">
+            @{instagramHandle}
+          </figcaption>
+        </figure>
+        <div className="max-w-[30rem]">
+          <h2 id="selfies-heading" className="font-display text-t-xl tracking-[0.06em]">
+            TAG US IN YOUR
+            <span className="rose-gold-text -mt-[0.1em] block w-fit px-[0.1em] font-script text-[clamp(3.75rem,8vw,6.5rem)] leading-[1.15] tracking-normal bp-560:mx-auto">
+              Selfies!
+            </span>
+          </h2>
+          <p className="mt-2 text-t-lg leading-[1.55] text-stone">
+            We love seeing your final looks. Tag us on Instagram @{instagramHandle} to be featured!
+          </p>
+          <a
+            href={`https://www.instagram.com/${instagramHandle}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex min-h-12 items-center gap-2.5 border border-ink px-7 text-[0.9375rem] font-medium tracking-[0.04em] transition-[background,color] duration-300 hover:bg-ink hover:text-paper"
+          >
+            <InstagramIcon size={18} strokeWidth={ICON_STROKE} />
+            Follow @{instagramHandle}
+          </a>
+        </div>
       </div>
     </section>
   </div>
