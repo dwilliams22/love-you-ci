@@ -47,7 +47,7 @@ export const MeetCi = () => (
             className="-mb-[0.32em] h-auto w-[clamp(110px,12vw,160px)] bp-560:w-[104px]"
           />
         </h2>
-        <p className="mb-3.5 font-display text-t-xl leading-[1.55]">
+        <p className="mb-3.5 text-t-xl leading-[1.55]">
           Hi, I am Ci, your personal Makeup Artist.
         </p>
         <p className="mb-3.5 text-t-lg leading-[1.55]">
