@@ -54,7 +54,7 @@ export const AddOnsModal = ({ service, groups, initialSelected, onNext, onClose 
       <header className="flex items-start justify-between gap-6 px-[clamp(24px,4vw,44px)] pt-[clamp(24px,4vw,40px)]">
         <div>
           <p className={sectionLabel}>CUSTOMIZE YOUR GLAM</p>
-          <h2 id="addons-title" className="mt-3 font-display text-t-xl leading-tight">
+          <h2 id="addons-title" className="mt-3 text-t-lg leading-tight font-semibold tracking-[0.2em] uppercase">
             {service.name}
           </h2>
           <p className="mt-1 text-t-sm text-stone">{metaLine(service)}</p>
@@ -81,7 +81,7 @@ export const AddOnsModal = ({ service, groups, initialSelected, onNext, onClose 
         ) : (
           groups.map((group) => (
             <fieldset key={group.id} className="border-t border-(--hair) pt-6 first:border-t-0 first:pt-0">
-              <legend className="font-display text-t-lg">{group.name}</legend>
+              <legend className="text-[0.9375rem] leading-tight font-semibold tracking-[0.2em] uppercase">{group.name}</legend>
               {group.prompt && <p className="mt-1 text-t-sm text-stone">{group.prompt}</p>}
               <ul className="mt-4">
                 {group.addOns.map((addOn) => {

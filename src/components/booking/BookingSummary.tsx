@@ -36,7 +36,7 @@ export const BookingSummary = ({
   return (
     <aside className="bg-mist p-[clamp(24px,3vw,36px)]" aria-label="Booking summary">
       <h2 className="text-[0.75rem] font-semibold tracking-[0.28em] text-rose-deep">SERVICE DETAILS</h2>
-      <p className="mt-4 font-display text-t-xl leading-tight">{service.name}</p>
+      <p className="mt-4 text-t-lg leading-tight font-semibold tracking-[0.2em] uppercase">{service.name}</p>
       <p className="mt-1 text-t-sm text-stone">{metaLine(service)}</p>
 
       {details.length > 0 && (
