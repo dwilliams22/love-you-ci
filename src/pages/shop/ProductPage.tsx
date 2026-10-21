@@ -135,7 +135,7 @@ const ProductView = ({ slug }: { slug: string }) => {
         <div className="min-w-0">
           {product ? (
             <>
-              <h1 className="font-display text-t-2xl leading-[1.05]">{product.name}</h1>
+              <h1 className="text-t-xl leading-tight font-semibold tracking-[0.2em] uppercase">{product.name}</h1>
               {product.ribbons.length > 0 && (
                 <p className="mt-4 text-[0.75rem] font-semibold tracking-[0.28em] text-rose-deep uppercase">
                   {product.ribbons.join(' · ')}

@@ -35,7 +35,7 @@ export const ProductCard = ({ product, index }: ProductCardProps) => {
             {product.ribbons.join(' · ')}
           </p>
         )}
-        <h2 className="font-display text-t-xl leading-tight">
+        <h2 className="text-t-lg leading-tight font-semibold tracking-[0.2em] uppercase">
           <Link to={href} className="transition-colors hover:text-rose-deep">
             {product.name}
           </Link>
