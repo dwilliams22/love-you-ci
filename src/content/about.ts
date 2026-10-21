@@ -18,3 +18,14 @@ export const aboutPromise =
 
 export const aboutClosing =
   'I am so excited to continue to pursue my passion and share special moments with all who book with me. Welcome to Love You, Ci!'
+
+// Short chapter labels are ours; every paragraph is Ci's
+export const aboutStory = [
+  { label: 'Where I’m from', text: aboutIntro },
+  { label: 'Where it started', text: aboutJourney[0] },
+  { label: 'Growing my craft', text: aboutJourney[1] },
+  { label: 'Today', text: aboutJourney[2] },
+] as const
+
+export const aboutStampLabel = 'Why Love You, Ci'
+export const aboutPromiseLabel = 'Our promise'

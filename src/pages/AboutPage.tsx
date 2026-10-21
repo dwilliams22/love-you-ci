@@ -1,7 +1,15 @@
 import photo from '../assets/about-ci.jpg'
-import { aboutClosing, aboutIntro, aboutJourney, aboutPromise, aboutStamp } from '../content/about'
+import {
+  aboutClosing,
+  aboutPromise,
+  aboutPromiseLabel,
+  aboutStamp,
+  aboutStampLabel,
+  aboutStory,
+} from '../content/about'
+import { AboutChapter } from '../components/about/AboutChapter'
 
-const bodyClass = 'mx-auto max-w-[36rem] text-t-lg leading-[1.8]'
+const bodyClass = 'text-t-lg leading-[1.8]'
 
 export const AboutPage = () => (
   // --title: heading size; the portrait leaves room for it so the whole title fits the first screen
@@ -45,30 +53,30 @@ export const AboutPage = () => (
 
     <article className="relative overflow-clip pt-[clamp(24px,4vw,56px)] pb-[clamp(96px,13vw,180px)]" aria-label="Ci's story">
       <div className="wrap">
-        {[aboutIntro, ...aboutJourney].map((text) => (
-          <p key={text.slice(0, 24)} className={`${bodyClass} mb-8`}>
-            {text}
-          </p>
-        ))}
+        <ol className="mx-auto max-w-[60rem]">
+          {aboutStory.map((chapter, i) => (
+            <AboutChapter key={chapter.label} number={i + 1} label={chapter.label} text={chapter.text} dropCap={i === 0} />
+          ))}
+        </ol>
       </div>
 
-      <figure className="relative isolate my-[clamp(40px,6vw,88px)] py-[clamp(40px,6vw,80px)]">
-        <span
-          className="pointer-events-none absolute top-1/2 left-1/2 -z-10 -translate-1/2 font-display text-t-ghost leading-[0.8] whitespace-nowrap text-mist select-none [--px:-90px]"
-          data-parallax
-          aria-hidden
-        >
-          LOVE YOU
-        </span>
-        <blockquote className="wrap mx-auto max-w-[46rem] text-center">
-          <p className="text-t-lg leading-[1.8]">{aboutStamp}</p>
-        </blockquote>
+      {/* "Love You, Ci" explained: a taped note on a full-bleed mist band, like the booking page's polaroid */}
+      <figure className="my-[clamp(24px,4vw,48px)] bg-mist py-[clamp(72px,9vw,128px)]">
+        <div className="wrap">
+          <blockquote className="taped tape-rose mx-auto max-w-[46rem] bg-paper px-[clamp(24px,6vw,80px)] pt-[clamp(48px,6vw,72px)] pb-[clamp(40px,5vw,64px)] text-center [--tape-rot:-2deg]">
+            <p className="text-[0.75rem] font-semibold tracking-[0.28em] text-rose-deep uppercase">{aboutStampLabel}</p>
+            <span className="mx-auto mt-5 mb-7 block h-px w-12 bg-(image:--rose-gold)" aria-hidden />
+            <p className={`mx-auto max-w-[36rem] ${bodyClass}`}>{aboutStamp}</p>
+          </blockquote>
+        </div>
       </figure>
 
       <div className="wrap">
-        <p className={bodyClass}>{aboutPromise}</p>
-        <div className="mx-auto mt-[clamp(56px,7vw,88px)] max-w-[36rem] border-t border-(--hair) pt-[clamp(48px,6vw,72px)] text-center">
-          <p className="text-t-lg leading-[1.8]">{aboutClosing}</p>
+        <ol className="mx-auto max-w-[60rem] border-b border-(--hair)" start={aboutStory.length + 1}>
+          <AboutChapter number={aboutStory.length + 1} label={aboutPromiseLabel} text={aboutPromise} />
+        </ol>
+        <div className="mx-auto mt-[clamp(56px,7vw,88px)] max-w-[36rem] text-center">
+          <p className={bodyClass}>{aboutClosing}</p>
           <p className="rose-gold-text mx-auto mt-8 w-fit px-[0.2em] py-[0.1em] font-script text-[clamp(2.5rem,4vw,3.25rem)] leading-none">
             Ciara Latrice
           </p>
