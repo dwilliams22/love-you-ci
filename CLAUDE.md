@@ -71,7 +71,8 @@ Conventions: function components, named exports, one component per file, typed p
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
 - **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and looks exactly like the template's link. TODO: wire it to Wix Members hosted login.
 - Social links: Instagram `https://www.instagram.com/loveyouci`, YouTube `https://www.youtube.com/c/CiaraLatrice/featured` (open in a new tab with `rel="noopener noreferrer"`).
-- Stub pages (About, Book, Portfolio, Contact, Shop) are bare for now: header, a plain `h1` on the paper background, footer.
+- Stub pages (Portfolio, Contact, Shop) are bare for now: header, a plain `h1` on the paper background, footer.
+- **About** (`/about`, `AboutPage.tsx`): Ci's portrait (`assets/about-ci.jpg`, cropped from her shoot) on mist with an oval feather (`.about-photo`), darkening to ink (`.about-fade`) under the "ABOUT Ci" title like her About graphic. The intro sits on ink, an eased scrim (`.about-unfade`) returns to paper for the story, the "my stamp" passage is the feature quote over a parallax "LOVE YOU" ghost word, and it signs off with "Ciara Latrice". **All wording lives in `src/content/about.ts`**, word-for-word from her graphic.
 
 ## Design system
 

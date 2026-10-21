@@ -378,6 +378,35 @@
     color: transparent;
   }
 
+  /* ─────────── About: portrait melts into mist at the sides, darkens to ink below ─────────── */
+  .about-photo {
+    /* Oval feather hides where the studio backdrop meets the mist */
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 52%, #000 70%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 52%, #000 70%, transparent 100%);
+  }
+  .about-fade {
+    background: linear-gradient(
+      180deg,
+      transparent 36%,
+      rgba(22, 20, 21, 0.35) 56%,
+      rgba(22, 20, 21, 0.82) 76%,
+      var(--color-ink) 94%
+    );
+  }
+
+  /* Eased ink-to-paper scrim (a linear fade turns muddy grey in the middle) */
+  .about-unfade {
+    background: linear-gradient(
+      180deg,
+      var(--color-ink) 0%,
+      rgba(22, 20, 21, 0.74) 22%,
+      rgba(22, 20, 21, 0.42) 46%,
+      rgba(22, 20, 21, 0.16) 70%,
+      rgba(22, 20, 21, 0.03) 88%,
+      transparent
+    );
+  }
+
   /* ─────────── Looks carousel ─────────── */
   .looks-track {
     scrollbar-width: none;
