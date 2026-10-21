@@ -191,7 +191,7 @@ export const BookingPolicy = () => (
             className="mt-8 inline-flex min-h-12 items-center gap-2.5 border border-ink px-7 text-[0.9375rem] font-medium tracking-[0.04em] transition-[background,color] duration-300 hover:bg-ink hover:text-paper"
           >
             <InstagramIcon size={18} strokeWidth={ICON_STROKE} />
-            Follow @{instagramHandle}
+            Follow Us
           </a>
         </div>
       </div>

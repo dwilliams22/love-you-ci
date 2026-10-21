@@ -80,7 +80,7 @@ describe('booking flow', () => {
     expect(screen.getAllByRole('listitem').length).toBeGreaterThanOrEqual(7)
     expect(screen.getByText('Books open monthly on the 20th of each month at 5pm.')).toBeInTheDocument()
     expect(screen.getByText(/2323 Lake Club Drive/)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Follow @loveyouci' })).toHaveAttribute('href', 'https://www.instagram.com/loveyouci')
+    expect(screen.getByRole('link', { name: 'Follow Us' })).toHaveAttribute('href', 'https://www.instagram.com/loveyouci')
   })
 
   it('shows the service header and a disabled Continue until a time is picked', async () => {
