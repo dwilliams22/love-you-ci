@@ -111,16 +111,13 @@ export const BookingPolicy = () => (
         <h2 id="policy-heading" className="mt-4 font-display text-t-2xl leading-none">
           Booking Policy
         </h2>
-        <p className="rose-gold-text mx-auto -mt-[0.35em] w-fit px-[0.2em] font-script text-[clamp(2.25rem,3.6vw,3rem)] leading-none" aria-hidden>
-          Booking Policy
-        </p>
       </div>
       <ol className="mt-[clamp(32px,4vw,56px)] grid grid-cols-2 gap-x-[clamp(32px,5vw,80px)] gap-y-10 bp-860:grid-cols-1">
         {policyRules.map((rule) => (
           <li key={rule.id} className="flex gap-5">
             <IconBadge icon={RULE_ICONS[rule.id]} />
             <div>
-              <h3 className="font-display text-t-lg leading-tight">{rule.title}</h3>
+              <h3 className={`${eyebrow} leading-tight`}>{rule.title}</h3>
               <p className="mt-2 text-[0.9375rem] leading-[1.65] text-stone">
                 {rule.body.map((part, i) =>
                   part.emphasis ? (
