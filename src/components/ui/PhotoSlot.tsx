@@ -13,7 +13,7 @@ type Photo = {
 type PhotoSlotProps = {
   label: string
   className?: string
-  // Moves the label (or the photo) with the parallax effect
+  // Moves the placeholder label with the parallax effect. A photo always shows whole, so it stays still.
   parallax?: boolean
   photo?: Photo
 }
@@ -30,9 +30,6 @@ export const PhotoSlot = ({ label, className = '', parallax = false, photo }: Ph
         loading={photo.priority ? 'eager' : 'lazy'}
         fetchPriority={photo.priority ? 'high' : undefined}
         decoding="async"
-        // Overscan by the parallax travel (--py, up to 28px each way) so no edge shows
-        className={parallax ? 'top-[-28px] h-[calc(100%_+_56px)]' : undefined}
-        data-parallax={parallax || undefined}
       />
     ) : (
       <span data-parallax={parallax || undefined}>
