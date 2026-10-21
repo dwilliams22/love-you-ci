@@ -74,7 +74,8 @@ Conventions: function components, named exports, one component per file, typed p
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
 - **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and looks exactly like the template's link. TODO: wire it to Wix Members hosted login.
 - Social links: Instagram `https://www.instagram.com/loveyouci`, YouTube `https://www.youtube.com/c/CiaraLatrice/featured` (open in a new tab with `rel="noopener noreferrer"`).
-- Stub pages (Portfolio, Contact) are bare for now: header, a plain `h1` on the paper background, footer.
+- Stub page (Portfolio) is bare for now: header, a plain `h1` on the paper background, footer.
+- **Contact** (`/contact`, `ContactPage.tsx`): see "Contact form (feat/contact-page)" below.
 - **About** (`/about`, `AboutPage.tsx`): Ci's portrait (`assets/about-ci.jpg`, cropped from her shoot) on mist with an oval feather (`.about-photo`), darkening to ink (`.about-fade`) like her About graphic. The heading sits on the seam: a giant "ABOUT" whose letters fade from paper into the ink (`.about-word`), signed across its lower half by a rose-gold script "Ci" (`.about-ci`) that swings in and shimmers once on load (off with reduced motion). `--title` on `<main>` is the heading size, and the portrait is sized from it so the whole heading fits the first screen. The intro sits on ink, an eased scrim (`.about-unfade`) returns to paper for the story, the "my stamp" passage is the feature quote over a parallax "LOVE YOU" ghost word, and it signs off with "Ciara Latrice". **All wording lives in `src/content/about.ts`**, word-for-word from her graphic.
 
 ## Design system
@@ -152,13 +153,13 @@ Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 
 ## Wix Headless
 
-- Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`, `@wix/ecom`, `@wix/categories`, `@wix/redirects`.
+- Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`, `@wix/ecom`, `@wix/categories`, `@wix/redirects`, `@wix/forms`.
 - **One auth seam:** `src/wix/sdk.ts` (`wixModule(module)`, `wixFetch(path)`) builds the single OAuth visitor client from `src/wix/config.ts` (`VITE_WIX_CLIENT_ID`) and persists tokens in localStorage. Every Wix call goes through it; never create another client. `src/lib/wix.ts` only holds the dev smoke test.
 - `VITE_WIX_CLIENT_ID` is typed in `src/vite-env.d.ts`.
 - Ci's Wix site belongs to **her** Wix account: "CIARA LATRICE" (site ID `21782089-2304-4c5f-b2de-dfdfba302da5`, https://www.loveyouci.com, Premium). The Wix MCP is authenticated with her account (Oct 21, 2026), so MCP site context and admin calls apply to her site. Apps include Bookings, Stores, Members Area, Forms & Payments, Invoices (V1) and Chat. The visitor client (`VITE_WIX_CLIENT_ID` in a throwaway node script with `node --env-file=.env.local`) is still the way to check what the frontend itself sees.
 - Stores catalog version on her site is **V3** (confirmed through MCP site context, Oct 21, 2026). Use `productsV3` and `/stores/v3/` APIs only, never the V1 `products` module.
 - In dev, when `VITE_WIX_CLIENT_ID` is set, `main.tsx` runs `wixSmokeTest()`, which logs the counts of booking services and products to the console.
-- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), Members login, then real content for About, Portfolio and Contact. Ask the user for content and requirements for each page before building it.
+- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), Members login, then real content for About and Portfolio (Contact is done, see below). Ask the user for content and requirements for each page before building it.
 
 ## Bookings (feat/bookings-flow)
 
@@ -214,3 +215,15 @@ Pages:
 
 Ci's store (checked Oct 21, 2026): Butter Gloss ($14, was $15; shades Allure, Adore, Lovely, each with its own photo) and Butter Gloss Bundle ($36, was $45; out of stock, no notify-me). Shipping is set up ($3.99 delivery at checkout) and Wix estimates sales tax in the cart. Live test: added Lovely ×2, checkout opened at `https://www.loveyouci.com/__ecom/checkout` with the right line, and "Continue Browsing" returned to `/shop` (plus `?wixMemberLoggedIn=true`) with the cart intact. It was abandoned unpaid and the cart was emptied afterwards. The paid return to `/shop/thank-you` has not been tested.
 
+
+## Contact form (feat/contact-page)
+
+Built on Wix's verified forms code, vendored from the `wix-headless-templates` skill (`forms/app`) into `src/wix/forms/*` and `src/hooks/forms/useWixForm.ts`. **Values, validation and submit only go through `useWixForm`.** Never hand-build a submission, and never name a field in code: `ContactForm` renders `form.fields` from the live schema, so Ci can rename, add or reorder fields in her dashboard. Layout keys off `identifier` only (first/last name sit side by side).
+
+Local change to vendored files (re-apply if you ever re-copy them): `useWixForm` keeps the store in lazy `useState` (React Compiler rule). Remount with `key={formId}` to switch forms.
+
+Wix setup (Oct 21, 2026, approved by the user): Ci's existing contact form is on the **old** Wix Forms app, which headless can't reach, and it was left untouched. We installed the new Wix Forms app (`225dd912-7dea-4738-8688-4b8c6955ffc2`) and created a separate form **"Contact (new website)"**, `88150620-90c5-48a1-8aae-c49b6cfdb4d5` (`CONTACT_FORM_ID` in `src/content/contact.ts`), with the same fields as her Wix page: First Name, Last Name, Email (required), Message, button "Send", thank-you "Thank you for reaching out! Your message has been sent." Wix auto-created an active automation, "New submission received for Contact (new website)", that emails the site owner (Reply-To is the visitor). Dashboard: `https://manage.wix.com/dashboard/21782089-2304-4c5f-b2de-dfdfba302da5/wix-forms/form/88150620-90c5-48a1-8aae-c49b6cfdb4d5`.
+
+Page: two columns at >1080px (eyebrow "CONTACT CI", `h1` "Want to chat?", intro, then Phone (text only) / Email / Social Media with hairlines), with the form in a mist panel on the right. At ≤1080px it stacks and the details become a wrapping row, and at ≤560px they stack again. Social buttons are the shared `components/ui/SocialLinks` (also used in the footer). **Wording lives in `src/content/contact.ts`**, from Ci's Wix contact page ("Touch Base" left out on purpose). The thank-you replaces the form in place, focuses its heading, and has "Send another message" (`reset`).
+
+Live test (Oct 21, 2026): one submission ("TEST" / "please ignore") from `/contact` was stored as CONFIRMED with a CRM contact, and the thank-you showed. Whether the notification email reached Ci's inbox has not been confirmed.

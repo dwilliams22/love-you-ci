@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { renderRoute } from './test/renderRoute'
 
 const pages = [
-  ['/about', 'About Ci'],
-  ['/portfolio', 'Portfolio'],
-  ['/contact', 'Contact Ci'],
-  ['/shop', 'Shop Our Products'],
+  ['/about', 'About Ci', 'About Ci'],
+  ['/portfolio', 'Portfolio', 'Portfolio'],
+  ['/contact', 'Contact Ci', 'Want to chat?'],
+  ['/shop', 'Shop Our Products', 'Shop Our Products'],
 ]
 
 describe('routes', () => {
@@ -16,9 +16,9 @@ describe('routes', () => {
     await waitFor(() => expect(document.title).toBe('Love You, Ci | Makeup Artistry'))
   })
 
-  it.each(pages)('renders %s with heading and title', async (path, title) => {
+  it.each(pages)('renders %s with heading and title', async (path, title, heading) => {
     renderRoute(path)
-    expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: heading })).toBeInTheDocument()
     await waitFor(() => expect(document.title).toBe(`${title} | Love You, Ci`))
   })
 

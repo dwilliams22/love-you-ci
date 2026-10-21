@@ -1,13 +1,8 @@
 import { NavLink } from 'react-router'
-import { navItems, socialLinks } from '../../config/nav'
+import { navItems } from '../../config/nav'
 import logo from '../../assets/love-you-ci-logo.png'
-import { InstagramIcon } from '../icons/InstagramIcon'
-import { YoutubeIcon } from '../icons/YoutubeIcon'
 import { Cta } from '../ui/Cta'
-import { ICON_STROKE } from '../ui/Icon'
-
-const socialClass =
-  'grid size-11 place-items-center rounded-[50%] border border-(--hair-light) text-[1.25rem] [transition:border-color_0.3s,color_0.3s] hover:border-rose hover:text-rose'
+import { SocialLinks } from '../ui/SocialLinks'
 
 export const SiteFooter = () => (
   <footer className="bg-ink pt-[clamp(56px,7vw,88px)] pb-7 text-center text-paper" id="contact">
@@ -41,26 +36,7 @@ export const SiteFooter = () => (
         </ul>
       </nav>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
-        <div className="flex gap-3">
-          <a
-            href={socialLinks.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Love You, Ci on Instagram"
-            className={socialClass}
-          >
-            <InstagramIcon size={20} strokeWidth={ICON_STROKE} />
-          </a>
-          <a
-            href={socialLinks.youtube}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Love You, Ci on YouTube"
-            className={socialClass}
-          >
-            <YoutubeIcon size={20} strokeWidth={ICON_STROKE} />
-          </a>
-        </div>
+        <SocialLinks onDark />
         <span aria-hidden="true" className="h-5 w-px bg-(--hair-light)" />
         <p className="text-[0.8125rem] text-stone-light">
           &copy; <span>{new Date().getFullYear()}</span> by Love You, Ci.

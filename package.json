@@ -17,6 +17,7 @@
     "@wix/bookings": "^1.0.1727",
     "@wix/categories": "^1.0.226",
     "@wix/ecom": "^1.0.2597",
+    "@wix/forms": "^1.0.534",
     "@wix/redirects": "^1.0.132",
     "@wix/sdk": "^1.21.18",
     "@wix/stores": "^1.0.956",
