@@ -73,7 +73,7 @@ export const AboutPage = () => (
       </figure>
 
       <div className="wrap">
-        <ol className="mx-auto max-w-[60rem] border-b border-(--hair)" start={aboutStory.length + 1}>
+        <ol className="mx-auto max-w-[60rem] border-b border-(--hair) [&>li]:border-t-0" start={aboutStory.length + 1}>
           <AboutChapter label={aboutPromiseLabel} text={aboutPromise} />
         </ol>
         <div className="mx-auto mt-[clamp(56px,7vw,88px)] max-w-[36rem] text-center">
