@@ -61,7 +61,7 @@ export const SchedulePage = () => {
           <SlotsSkeleton />
         ) : selectedDay ? (
           <>
-            <p className="mb-6 font-display text-t-xl">{longDayLabel(selectedDay)}</p>
+            <p className="mb-6 font-body text-t-xl">{longDayLabel(selectedDay)}</p>
             <TimeSlots
               slots={daySlots}
               selected={flow.selectedSlot}

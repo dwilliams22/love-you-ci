@@ -35,7 +35,7 @@ export const MonthCalendar = ({
         <button type="button" className={navBtn} onClick={onPrevMonth} disabled={!canGoPrev} aria-label="Previous month">
           <Icon icon={ChevronLeft} size={18} />
         </button>
-        <p className="font-display text-t-lg tracking-[0.04em]" aria-live="polite">
+        <p className="font-body text-t-lg tracking-[0.04em]" aria-live="polite">
           {monthLabel(month)}
         </p>
         <button type="button" className={navBtn} onClick={onNextMonth} aria-label="Next month">
