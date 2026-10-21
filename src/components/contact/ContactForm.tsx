@@ -75,7 +75,10 @@ export const ContactForm = ({ formId }: ContactFormProps) => {
             <p key={i}>{line}</p>
           ))}
         </div>
-        <p className="rose-gold-text mt-8 font-script text-[clamp(2.5rem,4vw,3.25rem)] leading-none">Love you, Ci</p>
+        {/* The gradient only paints inside the box; padding covers the script's loops past the 1em line, and the margins cancel it out */}
+        <p className="rose-gold-text mt-[calc(2rem-0.15em)] -mb-[0.15em] p-[0.15em] font-script text-[clamp(2.5rem,4vw,3.25rem)] leading-none">
+          Love you, Ci
+        </p>
         <button type="button" onClick={f.reset} className="text-link mt-10 cursor-pointer">
           Send another message <Icon icon={ChevronRight} size={15} />
         </button>
