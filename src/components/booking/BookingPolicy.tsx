@@ -143,7 +143,7 @@ export const BookingPolicy = () => (
         <li key={note.id} className="flex gap-4 bg-mist p-[clamp(20px,2.5vw,32px)]">
           <IconBadge icon={NOTE_ICONS[note.id]} size="size-11" />
           <div>
-            <p className="text-[0.9375rem] font-medium tracking-[0.02em]">{note.title}</p>
+            <p className={`${heading} flex min-h-11 items-center`}>{note.title}</p>
             <p className="mt-1 text-t-sm leading-[1.6] text-stone">{note.text}</p>
           </div>
         </li>
