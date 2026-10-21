@@ -53,9 +53,10 @@ export const AboutPage = () => (
 
     <article className="relative overflow-clip pt-[clamp(24px,4vw,56px)] pb-[clamp(96px,13vw,180px)]" aria-label="Ci's story">
       <div className="wrap">
-        <ol className="mx-auto max-w-[60rem]">
+        {/* No rule above the first chapter: the fade from ink already opens the story */}
+        <ol className="mx-auto max-w-[60rem] [&>li:first-child]:border-t-0">
           {aboutStory.map((chapter, i) => (
-            <AboutChapter key={chapter.label} number={i + 1} label={chapter.label} text={chapter.text} dropCap={i === 0} />
+            <AboutChapter key={chapter.label} label={chapter.label} text={chapter.text} dropCap={i === 0} />
           ))}
         </ol>
       </div>
@@ -73,7 +74,7 @@ export const AboutPage = () => (
 
       <div className="wrap">
         <ol className="mx-auto max-w-[60rem] border-b border-(--hair)" start={aboutStory.length + 1}>
-          <AboutChapter number={aboutStory.length + 1} label={aboutPromiseLabel} text={aboutPromise} />
+          <AboutChapter label={aboutPromiseLabel} text={aboutPromise} />
         </ol>
         <div className="mx-auto mt-[clamp(56px,7vw,88px)] max-w-[36rem] text-center">
           <p className={bodyClass}>{aboutClosing}</p>
