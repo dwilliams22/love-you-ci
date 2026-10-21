@@ -37,7 +37,9 @@ const labelClass = 'block text-[0.75rem] font-medium tracking-[0.18em] text-ston
 const controlClass =
   'mt-2 block w-full rounded-none border-0 border-b border-(--hair) bg-transparent px-0 py-2.5 text-t-base font-normal text-ink transition-[border-color,box-shadow] duration-300 outline-none focus:border-ink focus:shadow-[0_1px_0_var(--color-ink)] focus-visible:outline-none aria-invalid:border-rose-deep autofill:shadow-[inset_0_0_0_1000px_var(--color-mist)]'
 
-const errorClass = 'mt-2 text-[0.8125rem] text-rose-deep empty:hidden'
+// The error line's height is always reserved: an error appearing on blur must not push the
+// Send button down mid-click (the click would miss and the visitor would have to click again).
+const errorClass = 'mt-1.5 min-h-[1.3125rem] text-[0.8125rem] leading-[1.3125rem] text-rose-deep'
 
 const RequiredMark = ({ form }: { form: FormDto }) => {
   if (form.requiredIndicator === 'NONE') return null
@@ -218,7 +220,7 @@ export const ContactForm = ({ formId }: ContactFormProps) => {
       }}
       className="bg-mist p-[clamp(28px,4vw,56px)]"
     >
-      <div className="grid grid-cols-2 gap-x-8 gap-y-9 bp-560:grid-cols-1">
+      <div className="grid grid-cols-2 gap-x-8 gap-y-4 bp-560:grid-cols-1">
         {fields.map((field) => {
           const grouped = ['radio', 'checkboxGroup', 'tags'].includes(field.control)
           return (
@@ -249,7 +251,7 @@ export const ContactForm = ({ formId }: ContactFormProps) => {
         </p>
       )}
 
-      <div className="mt-8 flex flex-wrap items-center justify-end gap-4 bp-560:[&>*]:w-full bp-560:[&>*]:justify-center">
+      <div className="mt-6 flex flex-wrap items-center justify-end gap-4 bp-560:[&>*]:w-full bp-560:[&>*]:justify-center">
         {f.step > 0 && (
           <button type="button" onClick={f.previous} className="text-link mt-0 mr-auto cursor-pointer">
             {form.previousText || 'Back'}
