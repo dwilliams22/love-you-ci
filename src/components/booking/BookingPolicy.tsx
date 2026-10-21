@@ -43,6 +43,8 @@ const RULE_ICONS: Record<PolicyRule['id'], IconComponent> = {
 }
 
 const eyebrow = 'text-[0.75rem] font-semibold tracking-[0.28em] text-rose-deep uppercase'
+// Section and rule headings: the eyebrow's type, larger and in ink
+const heading = 'text-[0.9375rem] leading-tight font-semibold tracking-[0.2em] text-ink uppercase'
 
 const IconBadge = ({ icon, size = 'size-12' }: { icon: IconComponent; size?: string }) => (
   <span className={`grid ${size} shrink-0 place-items-center rounded-full border border-rose/60 text-rose-deep`}>
@@ -57,7 +59,7 @@ export const BookingPolicy = () => (
       <section aria-labelledby="hours-heading">
         <div className="flex items-center gap-3">
           <IconBadge icon={Store} size="size-10" />
-          <h2 id="hours-heading" className={eyebrow}>
+          <h2 id="hours-heading" className={heading}>
             Business hours
           </h2>
         </div>
@@ -74,7 +76,7 @@ export const BookingPolicy = () => (
       <section aria-labelledby="studio-heading">
         <div className="flex items-center gap-3">
           <IconBadge icon={MapPin} size="size-10" />
-          <h2 id="studio-heading" className={eyebrow}>
+          <h2 id="studio-heading" className={heading}>
             Studio
           </h2>
         </div>
@@ -89,7 +91,7 @@ export const BookingPolicy = () => (
       <section aria-labelledby="addons-heading">
         <div className="flex items-center gap-3">
           <IconBadge icon={Plus} size="size-10" />
-          <h2 id="addons-heading" className={eyebrow}>
+          <h2 id="addons-heading" className={heading}>
             Add onto any makeup service
           </h2>
         </div>
@@ -117,8 +119,8 @@ export const BookingPolicy = () => (
           <li key={rule.id} className="flex gap-5">
             <IconBadge icon={RULE_ICONS[rule.id]} />
             <div>
-              <h3 className={`${eyebrow} leading-tight`}>{rule.title}</h3>
-              <p className="mt-2 text-[0.9375rem] leading-[1.65] text-stone">
+              <h3 className={`${heading} flex min-h-12 items-center`}>{rule.title}</h3>
+              <p className="mt-1 text-[0.9375rem] leading-[1.65] text-stone">
                 {rule.body.map((part, i) =>
                   part.emphasis ? (
                     <strong key={i} className="font-medium text-ink">
