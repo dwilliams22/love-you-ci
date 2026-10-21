@@ -394,6 +394,30 @@
     );
   }
 
+  /* Heading: the word itself fades from paper into the ink, like the portrait */
+  .about-word {
+    background: linear-gradient(180deg, var(--color-paper) 25%, rgba(251, 250, 250, 0.1) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .about-ci {
+    background: var(--rose-gold);
+    background-size: 240% 100%;
+    background-position: 0% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transform: rotate(-7deg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .about-ci {
+      animation:
+        ci-in 1.3s var(--ease-brand) 0.55s both,
+        shimmer 2.6s ease-in-out 1.1s both;
+    }
+  }
+
   /* Eased ink-to-paper scrim (a linear fade turns muddy grey in the middle) */
   .about-unfade {
     background: linear-gradient(
@@ -463,6 +487,17 @@
   from {
     opacity: 0;
     transform: translateX(-50%) rotate(var(--tape-rot)) scale(1.3, 0.6);
+  }
+}
+@keyframes ci-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.12em) rotate(-14deg) scale(0.9);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
   }
 }
 @keyframes marquee {

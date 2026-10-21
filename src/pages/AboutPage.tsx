@@ -4,12 +4,13 @@ import { aboutClosing, aboutIntro, aboutJourney, aboutPromise, aboutStamp } from
 const bodyClass = 'mx-auto max-w-[36rem] text-t-lg leading-[1.8]'
 
 export const AboutPage = () => (
-  <main>
+  // --title: heading size; the portrait leaves room for it so the whole title fits the first screen
+  <main className="[--title:clamp(5rem,24vw,16.5rem)]">
     <title>About Ci | Love You, Ci</title>
 
-    {/* Studio portrait that darkens into ink under the title, as on Ci's About graphic */}
-    <section className="relative isolate overflow-clip bg-mist" aria-labelledby="about-title">
-      <div className="hero-rise mx-auto w-[min(100%,620px,calc((100svh_-_var(--bar))*0.638))] bp-560:w-full">
+    {/* Studio portrait that darkens into ink, as on Ci's About graphic */}
+    <div className="relative isolate overflow-clip bg-mist">
+      <div className="hero-rise mx-auto w-[min(100%,620px,calc((100svh_-_var(--bar)_-_var(--title)*0.9)*0.638))]">
         <img
           src={photo}
           alt="Ci seated in a makeup chair, holding a brush"
@@ -20,21 +21,25 @@ export const AboutPage = () => (
         />
       </div>
       <div className="about-fade absolute inset-0" aria-hidden />
+    </div>
+
+    {/* flow-root keeps the heading's negative margin inside the band; z-index lifts it over the portrait */}
+    <section className="relative z-[1] flow-root bg-ink pb-[clamp(56px,8vw,104px)] text-center text-paper" aria-labelledby="about-title">
+      {/* Giant word rising out of the ink like the portrait, signed across its faded lower half with a rose-gold "Ci" */}
       <h1
         id="about-title"
-        className="hero-rise absolute inset-x-0 bottom-[clamp(28px,5vw,64px)] flex items-end justify-center font-display text-[clamp(3.25rem,9vw,7.5rem)] leading-none font-normal text-paper uppercase"
+        className="hero-rise relative -mt-[0.62em] pb-[0.62em] font-display text-(length:--title) leading-[0.8] font-normal"
         style={{ '--i': 1 }}
       >
-        <span className="tracking-[0.12em]">About</span>{' '}
-        <span className="rose-gold-text -ml-[0.32em] -mb-[0.12em] px-[0.25em] py-[0.15em] font-script text-[1.5em] normal-case">
-          Ci
+        <span className="relative inline-block">
+          <span className="about-word inline-block pl-[0.06em] tracking-[0.06em] uppercase">About</span>{' '}
+          <span className="about-ci absolute top-[0.2em] left-1/2 -translate-x-1/2 px-[0.25em] py-[0.15em] font-script text-[1.05em] leading-none">
+            Ci
+          </span>
         </span>
       </h1>
-    </section>
-
-    <section className="bg-ink pb-[clamp(56px,8vw,104px)] text-center text-paper" aria-label="Hi Loves">
       <p
-        className="wrap hero-rise mx-auto max-w-[44rem] pt-[clamp(32px,4vw,48px)] font-display text-t-xl leading-[1.55]"
+        className="wrap hero-rise mx-auto max-w-[44rem] pt-[clamp(16px,2vw,32px)] font-display text-t-xl leading-[1.55]"
         style={{ '--i': 2 }}
       >
         {aboutIntro}
