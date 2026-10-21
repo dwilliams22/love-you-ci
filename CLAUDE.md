@@ -146,7 +146,7 @@ Gotchas: compare element boxes at 0px tolerance. Pause the marquee (`set-reduced
 
 Last result (feat/landing-page): computed styles and boxes identical at every listed width, at several scroll offsets and with reduced motion. Menu, hover states and carousel behave identically. Viewport pixel diffs show only the icon glyphs.
 
-**Accepted differences:** icon glyph shapes (Lucide vs Phosphor; size, position, color and stroke weight must match), the active-link underline on non-home pages, Log In being a `<button>`, and the header cart button (right of Log In on desktop, left of the menu button at ≤1080px; it shifts the desktop nav left).
+**Accepted differences:** icon glyph shapes (Lucide vs Phosphor; size, position, color and stroke weight must match), the active-link underline on non-home pages, Log In being a `<button>`, and the header cart button (right of Log In on desktop, left of the menu button at ≤1080px; it shifts the desktop nav left), and the tighter footer (`feat/footer-polish`: less top padding, smaller logo, closer spacing, `<nav aria-label="Footer">` with a rose active link, socials and copyright on one row split by a hairline).
 
 Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 
