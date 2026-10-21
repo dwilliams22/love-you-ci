@@ -6,15 +6,14 @@ Custom React + TypeScript + TailwindCSS frontend for **Love You, Ci**, the busin
 - **Wix Stores** → products (`/shop`)
 - **Wix Members** → "Log In" (later phase, hosted login; there is no `/login` page)
 
-The visual source of truth is [reference/template.html](reference/template.html). The landing page (`/`) must match it **1:1** in presentation and behavior, and every other page uses the same palette, type and components.
+Every page uses the same palette, type and components (see "Design system"). Don't add new colors, fonts or one-off styles without asking.
 
 ## Working rules
 
 - **Ask, don't assume.** If a requirement, content, link target or Wix setting is unclear, ask the user before building it.
 - **Never write Wix API calls from memory.** Look up the method, package and shape first (`wix:wix-docs` skill or the Wix MCP `SearchWixSDKDocumentation` / `ReadFullDocsMethodSchema` tools).
-- Work on a feature branch (current: `feat/landing-page`). Commit after each completed phase; end commit messages with the `Co-Authored-By` trailer.
+- Work on a feature branch off `main`. Commit after each completed phase; end commit messages with the `Co-Authored-By` trailer.
 - A phase is done only when `npm run lint`, `npm run build` and `npm test` all pass.
-- Keep the template's look unless the user approves a change. Approved deviations are listed under "Accepted differences".
 
 ## Stack and commands
 
@@ -32,7 +31,6 @@ Environment: copy `.env.example` to `.env.local` and set `VITE_WIX_CLIENT_ID` (t
 ## Structure
 
 ```
-reference/                 template.html + its two logos (visual reference, do not edit)
 src/
   main.tsx                 RouterProvider
   router.tsx               createBrowserRouter: Layout + routes, catch-all → "/"
@@ -72,7 +70,7 @@ Conventions: function components, named exports, one component per file, typed p
 - Scroll resets to the top on every route change (React Router `<ScrollRestoration />` in Layout).
 - Titles use React 19's native `<title>` inside each page component.
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
-- **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and looks exactly like the template's link. TODO: wire it to Wix Members hosted login.
+- **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and is styled like a nav link. TODO: wire it to Wix Members hosted login.
 - Social links: Instagram `https://www.instagram.com/loveyouci`, YouTube `https://www.youtube.com/c/CiaraLatrice/featured` (open in a new tab with `rel="noopener noreferrer"`).
 - **Portfolio** (`/portfolio`, `PortfolioPage.tsx`): see "Portfolio (feat/portfolio-page)" below.
 - **Contact** (`/contact`, `ContactPage.tsx`): see "Contact form (feat/contact-page)" below.
@@ -98,31 +96,21 @@ Tokens live in `src/index.css`. Colors and fonts are in `@theme`, so they work a
 - **Fonts** (Google Fonts `<link>` in `index.html`): `font-display` Italiana (headings, wordmark), `font-body` Barlow (weight 300 body, 400/500/600 UI), `font-script` Mrs Saint Delafield (signature).
 - **Type scale** (1.25 ratio, 17px base): `t-sm` 0.875rem, `t-base` 1.0625rem, `t-lg` 1.25rem, `t-xl` clamp(1.5rem, 2.2vw, 1.875rem), `t-2xl` clamp(2.25rem, 4.6vw, 3.75rem), `t-ghost` clamp(7rem, 24vw, 22rem).
 - **Layout vars**: `--gutter: clamp(16px, 5vw, 72px)`, `--max: 1320px`, `--bar: 72px` (header height), `--ease: cubic-bezier(0.16, 1, 0.3, 1)`.
-- **Breakpoints** are max-width, as in the template: 1080px (desktop nav becomes the menu button), 860px (hero and Meet stack to one column), 560px (small phone tweaks). Use the custom variants `bp-1080:`, `bp-860:`, `bp-560:` (defined with `@custom-variant` in `index.css`). Do not use Tailwind's `max-[1080px]:`, which compiles to `width < 1080px` and misses exactly 1080px, and do not swap them for min-width `sm`/`md`/`lg`.
+- **Breakpoints** are max-width: 1080px (desktop nav becomes the menu button), 860px (hero and Meet stack to one column), 560px (small phone tweaks). Use the custom variants `bp-1080:`, `bp-860:`, `bp-560:` (defined with `@custom-variant` in `index.css`). Do not use Tailwind's `max-[1080px]:`, which compiles to `width < 1080px` and misses exactly 1080px, and do not swap them for min-width `sm`/`md`/`lg`.
 
 ### Styling policy (hybrid)
 
-- Layout, spacing, typography and colors go in JSX as Tailwind utilities, with arbitrary values copied exactly from the template (for example `py-[clamp(96px,13vw,180px)]`). Use `[transform:rotate(...)]` rather than `rotate-*`, because Tailwind's `rotate-*` sets the separate `rotate` property, which composes differently with the keyframe animations. Use `--edge` for the template's `max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)))` inset.
+- Layout, spacing, typography and colors go in JSX as Tailwind utilities, with arbitrary values where the scale doesn't fit (for example `py-[clamp(96px,13vw,180px)]`). Use `[transform:rotate(...)]` rather than `rotate-*`, because Tailwind's `rotate-*` sets the separate `rotate` property, which composes differently with the keyframe animations. Use `--edge` for the `max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)))` inset.
 - Things that are awkward as utilities are small classes in `@layer components`: `.wrap`, `.slot` / `.slot.on-dark`, `.taped` / `.tape-rose` (torn tape `::before` with clip-path), `[data-parallax]` (`@property --p` + `animation-timeline: view()`), `.cta` / `.cta.light` (rose-gold fill `::before`), nav underline `::after`, `.text-link`, story noise texture `::after`, and the keyframes (`marquee`, `rise`, `drop`, `stick`, `parallax`) with their `prefers-reduced-motion` overrides.
-- **Preflight caveat**: the template has no CSS reset, but Tailwind Preflight does. When something looks off, check Preflight first: button border and background, `ul`/`blockquote`/`figure` margins, heading font sizes, `img` display. Set the template's values explicitly.
+- **Preflight caveat**: Tailwind Preflight resets button border and background, `ul`/`blockquote`/`figure` margins, heading font sizes and `img` display. When something looks off, check Preflight first and set the values explicitly.
 
 ### Icons
 
-The template uses Phosphor Light. The app uses `lucide-react`:
+Icons come from `lucide-react` (`CircleUser`, `Menu` / `X`, `ChevronRight`, `Image`, `Heart`, `ArrowLeft` / `ArrowRight`, ...). Lucide v1 has no brand icons, so Instagram and YouTube are `components/icons/InstagramIcon` and `YoutubeIcon` (Lucide-style inline SVG).
 
-| Phosphor | Lucide |
-|---|---|
-| `ph-user-circle` | `CircleUser` |
-| `ph-list` / `ph-x` | `Menu` / `X` |
-| `ph-caret-right` | `ChevronRight` |
-| `ph-image` | `Image` |
-| `ph-heart` | `Heart` |
-| `ph-arrow-left` / `ph-arrow-right` | `ArrowLeft` / `ArrowRight` |
-| `ph-instagram-logo` / `ph-youtube-logo` | `components/icons/InstagramIcon`, `YoutubeIcon` (Lucide v1 has no brand icons) |
+Render icons through `<Icon icon={X} size={n} />` (`components/ui/Icon.tsx`), which applies `ICON_STROKE` (1.25) and `aria-hidden`. `size` is in px.
 
-Render icons through `<Icon icon={X} size={n} />` (`components/ui/Icon.tsx`), which applies `ICON_STROKE` (1.25) and `aria-hidden`. `size` equals the template's icon font-size in px (for example 18 for 1.125rem).
-
-## Behavior to preserve (from the template's JS)
+## Behavior to preserve
 
 - **Mobile menu** (≤1080px): the button toggles `.open` on the nav and updates `aria-expanded` and `aria-label` ("Open menu"/"Close menu"). The icon swaps between Menu and X. Clicking a link closes the menu. Escape closes it and returns focus to the button.
 - **Carousel** (Our Looks): the arrows scroll one card step (`card[1].offsetLeft - card[0].offsetLeft`) with smooth `scrollBy`. ArrowLeft/ArrowRight do the same when the track has focus. Prev is disabled while the first card is ≥95% visible and Next while the last card is (IntersectionObserver, `root: track`, threshold 0.95).
@@ -130,24 +118,6 @@ Render icons through `<Icon icon={X} size={n} />` (`components/ui/Icon.tsx`), wh
 - **Page load**: hero copy rises in, staggered with `--i`. The hero photo drops in and the tape "sticks".
 - **Marquee**: runs for 38s linear infinite and stops with reduced motion.
 - **Copyright year** is `new Date().getFullYear()`.
-
-## Parity check (template vs app)
-
-1. `python3 -m http.server 4000 --directory reference` (run in background) and `npm run dev` (if port 5173 is taken by another project, use `--port 5180` and the matching URL below).
-2. Open two headed sessions:
-   ```bash
-   playwright-cli -s=template open --headed http://localhost:4000/template.html
-   playwright-cli -s=app open --headed http://localhost:5173/
-   ```
-3. For each width in **375, 414, 560, 561, 768, 860, 861, 1024, 1080, 1081, 1280, 1440, 1920**: `resize` both sessions, take full-page `screenshot`s and compare them. Then `eval` computed styles and bounding boxes of the key elements (wordmark, hero h1, CTA, photo slots, ribbon, meet grid, story, look cards, footer) and diff them.
-4. Test interactions in both: nav hover underline, CTA hover fill, text-link hover, mobile menu (open, close, Escape, link click), carousel arrows, disabled ends and keyboard, marquee, load animations, parallax at several scroll offsets, and `set-reduced-motion reduce`.
-5. Repeat until the only differences left are accepted ones.
-
-Gotchas: compare element boxes at 0px tolerance. Pause the marquee (`set-reduced-motion reduce`) before diffing positions. Full-page screenshots stitch the sticky header in mid-page and can shift by 1px, so set the header to `position: relative` before capturing, or compare viewport screenshots instead. Make sure the app session is back on `/` after link-click tests. Remember that playwright `hover` needs a single-element locator (`>> nth=0`).
-
-Last result (feat/landing-page): computed styles and boxes identical at every listed width, at several scroll offsets and with reduced motion. Menu, hover states and carousel behave identically. Viewport pixel diffs show only the icon glyphs.
-
-**Accepted differences:** icon glyph shapes (Lucide vs Phosphor; size, position, color and stroke weight must match), the active-link underline on non-home pages, Log In being a `<button>`, and the header cart button (right of Log In on desktop, left of the menu button at ≤1080px; it shifts the desktop nav left), and the tighter footer (`feat/footer-polish`: less top padding, smaller logo, closer spacing, `<nav aria-label="Footer">` with a rose active link, socials and copyright on one row split by a hairline), and the Meet Ci heading word "Meet" and the line "Hi, I am Ci, your personal Makeup Artist." set in Barlow like the paragraph below them instead of the template's Italiana (same size, weight and spacing; the ghost "MEET" stays Italiana).
 
 Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 
