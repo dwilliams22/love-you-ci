@@ -61,14 +61,14 @@ export const AboutPage = () => (
           LOVE YOU
         </span>
         <blockquote className="wrap mx-auto max-w-[46rem] text-center">
-          <p className="font-display text-t-xl leading-[1.55]">{aboutStamp}</p>
+          <p className="text-t-lg leading-[1.8]">{aboutStamp}</p>
         </blockquote>
       </figure>
 
       <div className="wrap">
         <p className={bodyClass}>{aboutPromise}</p>
         <div className="mx-auto mt-[clamp(56px,7vw,88px)] max-w-[36rem] border-t border-(--hair) pt-[clamp(48px,6vw,72px)] text-center">
-          <p className="font-display text-t-xl leading-[1.55]">{aboutClosing}</p>
+          <p className="text-t-lg leading-[1.8]">{aboutClosing}</p>
           <p className="rose-gold-text mx-auto mt-8 w-fit px-[0.2em] py-[0.1em] font-script text-[clamp(2.5rem,4vw,3.25rem)] leading-none">
             Ciara Latrice
           </p>
