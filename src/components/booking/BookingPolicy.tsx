@@ -164,7 +164,7 @@ export const BookingPolicy = () => (
       </span>
       <div className="wrap grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[clamp(48px,8vw,128px)] bp-560:grid-cols-1 bp-560:justify-items-center bp-560:text-center">
         {/* Polaroid proportions: square photo, thin even sides/top, deep bottom strip */}
-        <figure className="taped tape-rose w-[clamp(230px,22vw,300px)] bg-paper px-[6%] pt-[6%] [transform:rotate(-3deg)] [--tape-rot:4deg] bp-560:order-2">
+        <figure className="taped tape-rose w-(--w) bg-paper px-[6%] pt-[6%] pb-[calc(var(--w)*0.28)] [--w:clamp(230px,22vw,300px)] [transform:rotate(-3deg)] [--tape-rot:4deg] bp-560:order-2">
           <img
             src={selfie}
             alt="A client's glam selfie: soft pink eyeshadow, full lashes, glowing highlight and a glossy pink lip"
@@ -173,9 +173,6 @@ export const BookingPolicy = () => (
             loading="lazy"
             className="aspect-square w-full object-cover"
           />
-          <figcaption className="rose-gold-text pt-[9%] pb-[11%] text-center font-script text-[clamp(1.75rem,2.4vw,2.25rem)] leading-none">
-            @{instagramHandle}
-          </figcaption>
         </figure>
         <div className="max-w-[30rem]">
           <h2 id="selfies-heading" className="font-display text-t-xl tracking-[0.06em]">
