@@ -65,7 +65,7 @@ export default function CartDrawer() {
         className="flex h-full w-full max-w-md flex-col bg-paper text-ink shadow-2xl outline-none"
       >
         <div className="flex items-center justify-between border-b border-(--hair) px-6 py-5">
-          <span className="font-display text-t-xl leading-none">
+          <span className="text-t-lg leading-none font-semibold tracking-[0.2em] uppercase">
             Cart{cart && cart.itemCount > 0 ? ` (${cart.itemCount})` : ""}
           </span>
           <button
