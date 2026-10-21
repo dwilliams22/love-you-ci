@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router'
 import { CircleUser, Menu, X } from 'lucide-react'
 import { navItems } from '../../config/nav'
+import CartButton from '../storefront/CartButton'
 import { Icon } from '../ui/Icon'
 import { Wordmark } from '../ui/Wordmark'
 
@@ -48,6 +49,7 @@ export const SiteHeader = () => {
           <Icon icon={CircleUser} size={18} />
           Log In
         </button>
+        <CartButton />
         <button
           ref={menuBtn}
           type="button"

@@ -216,6 +216,9 @@
     text-align: start;
     cursor: pointer;
   }
+  .cart-btn {
+    margin-right: -11px; /* optical: the icon's edge lines up with the wrap like Log In's text did */
+  }
   .menu-btn {
     display: none;
     margin-left: auto;
@@ -243,6 +246,12 @@
     }
     .menu-btn {
       display: grid;
+      /* the cart button takes the auto margin and sits just left of the menu button */
+      margin-left: 0;
+    }
+    .cart-btn {
+      margin-left: auto;
+      margin-right: -20px; /* pulls it toward the menu button across the header's 32px gap */
     }
     .nav.open {
       position: fixed;

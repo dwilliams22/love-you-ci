@@ -10,7 +10,9 @@ import { ThankYouPage } from './pages/book/ThankYouPage'
 import { ContactPage } from './pages/ContactPage'
 import { HomePage } from './pages/home/HomePage'
 import { PortfolioPage } from './pages/PortfolioPage'
-import { ShopPage } from './pages/ShopPage'
+import { ProductPage } from './pages/shop/ProductPage'
+import { ShopPage } from './pages/shop/ShopPage'
+import { ShopThankYouPage } from './pages/shop/ShopThankYouPage'
 
 export const routes: RouteObject[] = [
   {
@@ -31,6 +33,8 @@ export const routes: RouteObject[] = [
       { path: 'portfolio', element: <PortfolioPage /> },
       { path: 'contact', element: <ContactPage /> },
       { path: 'shop', element: <ShopPage /> },
+      { path: 'shop/thank-you', element: <ShopThankYouPage /> },
+      { path: 'shop/:slug', element: <ProductPage /> },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },

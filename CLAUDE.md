@@ -48,7 +48,8 @@ src/
   test/                    Vitest setup (IO/matchMedia/CSS mocks) + renderRoute helper
   pages/
     home/                  HomePage + sections: Hero, Ribbon, MeetCi, Story, Looks
-    AboutPage.tsx BookPage.tsx PortfolioPage.tsx ContactPage.tsx ShopPage.tsx
+    shop/                  ShopPage (grid), ProductPage (/shop/:slug), ShopThankYouPage
+    AboutPage.tsx PortfolioPage.tsx ContactPage.tsx
 ```
 
 Conventions: function components, named exports, one component per file, typed props (no `any`). Links come from `config/nav.ts`, never hard-coded twice.
@@ -63,6 +64,8 @@ Conventions: function components, named exports, one component per file, typed p
 | Portfolio | `/portfolio` | `Portfolio \| Love You, Ci` |
 | Contact Ci | `/contact` | `Contact Ci \| Love You, Ci` |
 | Shop Our Products | `/shop` | `Shop Our Products \| Love You, Ci` |
+| (product page) | `/shop/:slug` | `<Product name> \| Love You, Ci` |
+| (after checkout) | `/shop/thank-you` | `Thank You \| Love You, Ci` |
 
 - Unknown URLs redirect to `/` (`<Navigate to="/" replace />`). There is no 404 page.
 - Both "Book Now" CTAs go to `/book`. The Meet Ci "Portfolio" text link goes to `/portfolio`. Footer links mirror the nav.
@@ -71,7 +74,7 @@ Conventions: function components, named exports, one component per file, typed p
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
 - **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and looks exactly like the template's link. TODO: wire it to Wix Members hosted login.
 - Social links: Instagram `https://www.instagram.com/loveyouci`, YouTube `https://www.youtube.com/c/CiaraLatrice/featured` (open in a new tab with `rel="noopener noreferrer"`).
-- Stub pages (Portfolio, Contact, Shop) are bare for now: header, a plain `h1` on the paper background, footer.
+- Stub pages (Portfolio, Contact) are bare for now: header, a plain `h1` on the paper background, footer.
 - **About** (`/about`, `AboutPage.tsx`): Ci's portrait (`assets/about-ci.jpg`, cropped from her shoot) on mist with an oval feather (`.about-photo`), darkening to ink (`.about-fade`) like her About graphic. The heading sits on the seam: a giant "ABOUT" whose letters fade from paper into the ink (`.about-word`), signed across its lower half by a rose-gold script "Ci" (`.about-ci`) that swings in and shimmers once on load (off with reduced motion). `--title` on `<main>` is the heading size, and the portrait is sized from it so the whole heading fits the first screen. The intro sits on ink, an eased scrim (`.about-unfade`) returns to paper for the story, the "my stamp" passage is the feature quote over a parallax "LOVE YOU" ghost word, and it signs off with "Ciara Latrice". **All wording lives in `src/content/about.ts`**, word-for-word from her graphic.
 
 ## Design system
@@ -143,19 +146,19 @@ Gotchas: compare element boxes at 0px tolerance. Pause the marquee (`set-reduced
 
 Last result (feat/landing-page): computed styles and boxes identical at every listed width, at several scroll offsets and with reduced motion. Menu, hover states and carousel behave identically. Viewport pixel diffs show only the icon glyphs.
 
-**Accepted differences:** icon glyph shapes (Lucide vs Phosphor; size, position, color and stroke weight must match), the active-link underline on non-home pages, and Log In being a `<button>`.
+**Accepted differences:** icon glyph shapes (Lucide vs Phosphor; size, position, color and stroke weight must match), the active-link underline on non-home pages, Log In being a `<button>`, and the header cart button (right of Log In on desktop, left of the menu button at ≤1080px; it shifts the desktop nav left).
 
 Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 
 ## Wix Headless
 
-- Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`.
+- Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`, `@wix/ecom`, `@wix/categories`, `@wix/redirects`.
 - **One auth seam:** `src/wix/sdk.ts` (`wixModule(module)`, `wixFetch(path)`) builds the single OAuth visitor client from `src/wix/config.ts` (`VITE_WIX_CLIENT_ID`) and persists tokens in localStorage. Every Wix call goes through it; never create another client. `src/lib/wix.ts` only holds the dev smoke test.
 - `VITE_WIX_CLIENT_ID` is typed in `src/vite-env.d.ts`.
 - Ci's Wix site belongs to **her** Wix account: "CIARA LATRICE" (site ID `21782089-2304-4c5f-b2de-dfdfba302da5`, https://www.loveyouci.com, Premium). The Wix MCP is authenticated with her account (Oct 21, 2026), so MCP site context and admin calls apply to her site. Apps include Bookings, Stores, Members Area, Forms & Payments, Invoices (V1) and Chat. The visitor client (`VITE_WIX_CLIENT_ID` in a throwaway node script with `node --env-file=.env.local`) is still the way to check what the frontend itself sees.
 - Stores catalog version on her site is **V3** (confirmed through MCP site context, Oct 21, 2026). Use `productsV3` and `/stores/v3/` APIs only, never the V1 `products` module.
 - In dev, when `VITE_WIX_CLIENT_ID` is set, `main.tsx` runs `wixSmokeTest()`, which logs the counts of booking services and products to the console.
-- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), Stores on `/shop` (products, cart, hosted checkout), Members login, then real content for About, Portfolio and Contact. Ask the user for content and requirements for each page before building it.
+- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), Members login, then real content for About, Portfolio and Contact. Ask the user for content and requirements for each page before building it.
 
 ## Bookings (feat/bookings-flow)
 
@@ -191,3 +194,23 @@ Phone fields use `components/booking/PhoneField.tsx` (libphonenumber-js): a coun
 Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). Second live test (Oct 20, 2026): Natural Glam with Bottom Lashes (+5 min) and Mink Lashes. Slots came back 50 minutes long, and the checkout showed $130.00 ($115 + $15 add-ons), Pay Now $42 / Pay Later $88. It was abandoned unpaid. The paid return path to `/book/thank-you` has not been tested, because that needs a real payment.
 
 Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev, plus the production domain.
+
+## Shop (feat/shop)
+
+Built on Wix's verified storefront code (Catalog V3), vendored from the `wix-headless-templates` skill (`storefront/app`) into `src/wix/storefront/*`, `src/hooks/storefront/*` and `src/components/storefront/*` (CartButton, CartDrawer, OptionPicker, QuickAdd). **Catalog, cart and checkout only go through those exports** (`useShop`, `useProductDetail`, `useCart`, `fetchProducts`). Never hand-build cart lines, variant picks or checkout URLs, and never sort or filter a loaded page client-side.
+
+Local changes to vendored files (re-apply if you ever re-copy them):
+- `useShop` / `useProductDetail`: the store lives in lazy `useState` (React Compiler rule). `ProductPage` remounts `ProductView` with `key={slug}` to switch products.
+- `cart.ts` `checkoutUrl`: `postFlowUrl` (abandoned checkout) is `/shop`, `thankYouPageUrl` is `/shop/thank-you`.
+- Components restyled to the site tokens (ink/paper/stone/mist, `--hair`, rose-deep for errors, square corners, `.cta` buttons, Lucide icons). Behaviour unchanged. QuickAdd links go to `/shop/:slug` through the router.
+- `eslint.config.js`: `preserve-caught-error` is off for `src/wix/**` (the vendored cart rethrows with buyer copy).
+- FilterPanel and category pages are left out on purpose (2 products). Add them if the catalog grows.
+
+Pages:
+- `/shop`: no intro text, just an `h1` and taped product cards (alternating tilt, like the service cards) with ribbons, price (struck "was" price from the DTO), colour dots and QuickAdd ("Choose options" opens the shared OptionPicker over the card).
+- `/shop/:slug` follows Ci's Wix product page: breadcrumb (Home / Shop Our Products / name) with Prev/Next in the shop's order, gallery with thumbnails and the description on the left (description moves under the info sections at ≤860px), then name, price, "Name *" swatches, "Quantity *" stepper, full-width Add to Cart and the info sections as `<details>` accordions (first open). Picking a shade swaps to its photo and writes **`?variantId=`** (history `replace`). Loading `?variantId=` picks that variant's choices once.
+- Header: `CartButton` with a live count. `CartDrawer` is mounted once in `Layout` and opens after every add.
+- `/shop/thank-you`: same wording pattern as the bookings one, never says "confirmed".
+
+Ci's store (checked Oct 21, 2026): Butter Gloss ($14, was $15; shades Allure, Adore, Lovely, each with its own photo) and Butter Gloss Bundle ($36, was $45; out of stock, no notify-me). Shipping is set up ($3.99 delivery at checkout) and Wix estimates sales tax in the cart. Live test: added Lovely ×2, checkout opened at `https://www.loveyouci.com/__ecom/checkout` with the right line, and "Continue Browsing" returned to `/shop` (plus `?wixMemberLoggedIn=true`) with the cart intact. It was abandoned unpaid and the cart was emptied afterwards. The paid return to `/shop/thank-you` has not been tested.
+
