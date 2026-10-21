@@ -22,11 +22,11 @@ export const AboutPage = () => (
       <div className="about-fade absolute inset-0" aria-hidden />
       <h1
         id="about-title"
-        className="hero-rise absolute inset-x-0 bottom-[clamp(28px,5vw,64px)] flex items-end justify-center font-display text-[clamp(3.25rem,9vw,7.5rem)] leading-none font-normal text-paper uppercase"
+        className="hero-rise absolute inset-x-0 bottom-[clamp(28px,5vw,64px)] flex items-baseline justify-center font-display text-[clamp(3.25rem,9vw,7.5rem)] leading-none font-normal text-paper uppercase"
         style={{ '--i': 1 }}
       >
         <span className="tracking-[0.12em]">About</span>{' '}
-        <span className="rose-gold-text -ml-[0.32em] -mb-[0.12em] px-[0.25em] py-[0.15em] font-script text-[1.5em] normal-case">
+        <span className="rose-gold-text relative top-[0.12em] -ml-[0.32em] px-[0.25em] py-[0.15em] font-script text-[1.5em] normal-case">
           Ci
         </span>
       </h1>
