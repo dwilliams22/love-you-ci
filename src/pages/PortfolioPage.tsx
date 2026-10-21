@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { flushSync } from 'react-dom'
-import { Cta } from '../components/ui/Cta'
 import { Lightbox } from '../components/portfolio/Lightbox'
 import { PortfolioGrid } from '../components/portfolio/PortfolioGrid'
 import { photoId } from '../components/portfolio/photoId'
@@ -65,9 +64,6 @@ export const PortfolioPage = () => {
       <title>Portfolio | Love You, Ci</title>
       <h1 className="font-display text-t-2xl leading-none">{portfolioHeading}</h1>
       <Gallery key={attempt} onRetry={() => setAttempt(attempt + 1)} />
-      <div className="mt-[clamp(56px,7vw,96px)] text-center">
-        <Cta to="/book">Book Now</Cta>
-      </div>
     </main>
   )
 }

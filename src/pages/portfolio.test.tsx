@@ -29,13 +29,11 @@ const withPhotos = (count: number) => {
 beforeEach(() => withPhotos(9))
 
 describe('portfolio page', () => {
-  it('shows the heading, the Wix intro, every photo and a Book Now link', () => {
+  it('shows the heading, the Wix intro and every photo', () => {
     renderRoute('/portfolio')
     expect(screen.getByRole('heading', { level: 1, name: 'Portfolio' })).toBeInTheDocument()
     expect(screen.getByText('Soft and seamless glam.')).toBeInTheDocument()
-    expect(screen.getAllByRole('button', { name: /^Makeup by Ci, photo \d+ of 9$/ })).toHaveLength(9)
-    expect(within(screen.getByRole('main')).getByRole('link', { name: /Book Now/ })).toHaveAttribute('href', '/book')
-  })
+    expect(screen.getAllByRole('button', { name: /^Makeup by Ci, photo \d+ of 9$/ })).toHaveLength(9)  })
 
   it('makes photos 1 and 4 of every 6 large and centers the leftovers in their own row', () => {
     renderRoute('/portfolio')
