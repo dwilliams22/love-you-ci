@@ -1,6 +1,6 @@
 // Header cart icon with a live count badge — mount once in your header, as-is.
 // Opens the CartDrawer (mount that once too, anywhere in the page).
-// Love You, Ci: Lucide icon at the Log In link's size, badge on the site tokens.
+// Love You, Ci: Lucide icon at the nav's icon size, badge on the site tokens.
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "../../hooks/storefront/useCart";
 import { Icon } from "../ui/Icon";

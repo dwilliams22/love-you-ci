@@ -4,7 +4,6 @@ Custom React + TypeScript + TailwindCSS frontend for **Love You, Ci**, the busin
 
 - **Wix Bookings** → appointments (`/book`)
 - **Wix Stores** → products (`/shop`)
-- **Wix Members** → "Log In" (later phase, hosted login; there is no `/login` page)
 
 Every page uses the same palette, type and components (see "Design system"). Don't add new colors, fonts or one-off styles without asking.
 
@@ -70,7 +69,6 @@ Conventions: function components, named exports, one component per file, typed p
 - Scroll resets to the top on every route change (React Router `<ScrollRestoration />` in Layout).
 - Titles use React 19's native `<title>` inside each page component.
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
-- **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and is styled like a nav link. TODO: wire it to Wix Members hosted login.
 - Social links: Instagram `https://www.instagram.com/loveyouci`, YouTube `https://www.youtube.com/c/CiaraLatrice/featured` (open in a new tab with `rel="noopener noreferrer"`).
 - **Portfolio** (`/portfolio`, `PortfolioPage.tsx`): see "Portfolio (feat/portfolio-page)" below.
 - **Contact** (`/contact`, `ContactPage.tsx`): see "Contact form (feat/contact-page)" below.
@@ -106,7 +104,7 @@ Tokens live in `src/index.css`. Colors and fonts are in `@theme`, so they work a
 
 ### Icons
 
-Icons come from `lucide-react` (`CircleUser`, `Menu` / `X`, `ChevronRight`, `Image`, `Heart`, `ArrowLeft` / `ArrowRight`, ...). Lucide v1 has no brand icons, so Instagram and YouTube are `components/icons/InstagramIcon` and `YoutubeIcon` (Lucide-style inline SVG).
+Icons come from `lucide-react` (`Menu` / `X`, `ChevronRight`, `Image`, `Heart`, `ArrowLeft` / `ArrowRight`, ...). Lucide v1 has no brand icons, so Instagram and YouTube are `components/icons/InstagramIcon` and `YoutubeIcon` (Lucide-style inline SVG).
 
 Render icons through `<Icon icon={X} size={n} />` (`components/ui/Icon.tsx`), which applies `ICON_STROKE` (1.25) and `aria-hidden`. `size` is in px.
 
@@ -129,7 +127,7 @@ Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 - Ci's Wix site belongs to **her** Wix account: "CIARA LATRICE" (site ID `21782089-2304-4c5f-b2de-dfdfba302da5`, https://www.loveyouci.com, Premium). The Wix MCP is authenticated with her account (Oct 21, 2026), so MCP site context and admin calls apply to her site. Apps include Bookings, Stores, Members Area, Forms & Payments, Invoices (V1) and Chat. The visitor client (`VITE_WIX_CLIENT_ID` in a throwaway node script with `node --env-file=.env.local`) is still the way to check what the frontend itself sees.
 - Stores catalog version on her site is **V3** (confirmed through MCP site context, Oct 21, 2026). Use `productsV3` and `/stores/v3/` APIs only, never the V1 `products` module.
 - In dev, when `VITE_WIX_CLIENT_ID` is set, `main.tsx` runs `wixSmokeTest()`, which logs the counts of booking services and products to the console.
-- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), Members login, then real content for About (Contact and Portfolio are done, see below). Ask the user for content and requirements for each page before building it.
+- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), then real content for About (Contact and Portfolio are done, see below). Ask the user for content and requirements for each page before building it.
 
 ## Bookings (feat/bookings-flow)
 

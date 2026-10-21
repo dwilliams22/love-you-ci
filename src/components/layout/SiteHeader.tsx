@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router'
-import { CircleUser, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { navItems } from '../../config/nav'
 import CartButton from '../storefront/CartButton'
 import { Icon } from '../ui/Icon'
 import { Wordmark } from '../ui/Wordmark'
-
-// TODO: wire Log In to Wix Members hosted login
-const handleLogin = () => {}
 
 export const SiteHeader = () => {
   const [open, setOpen] = useState(false)
@@ -33,22 +30,14 @@ export const SiteHeader = () => {
           id="site-nav"
           aria-label="Main"
           className={`nav ${open ? 'open' : ''}`}
-          onClick={(e) => (e.target as HTMLElement).closest('a, button') && setOpen(false)}
+          onClick={(e) => (e.target as HTMLElement).closest('a') && setOpen(false)}
         >
           {navItems.map((item) => (
             <NavLink key={item.to} to={item.to} className="nav-link">
               {item.label}
             </NavLink>
           ))}
-          <button type="button" className="nav-link login-m" onClick={handleLogin}>
-            <Icon icon={CircleUser} size={20} />
-            Log In
-          </button>
         </nav>
-        <button type="button" className="login" onClick={handleLogin}>
-          <Icon icon={CircleUser} size={18} />
-          Log In
-        </button>
         <CartButton />
         <button
           ref={menuBtn}

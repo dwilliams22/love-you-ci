@@ -205,19 +205,8 @@
   .nav-link[aria-current='page']::after {
     transform: scaleX(1);
   }
-  .login {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-stone);
-    font-size: var(--text-t-sm);
-    padding-left: clamp(18px, 2.4vw, 34px);
-    border-left: 1px solid var(--hair);
-    text-align: start;
-    cursor: pointer;
-  }
   .cart-btn {
-    margin-right: -11px; /* optical: the icon's edge lines up with the wrap like Log In's text did */
+    margin-right: -11px; /* optical: the icon's edge lines up with the wrap */
   }
   .menu-btn {
     display: none;
@@ -231,17 +220,8 @@
     font-size: 1.5rem;
     cursor: pointer;
   }
-  .login-m {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    color: var(--color-stone);
-    text-align: start;
-    cursor: pointer;
-  }
   @media (max-width: 1080px) {
-    .nav,
-    .login {
+    .nav {
       display: none;
     }
     .menu-btn {
@@ -273,9 +253,6 @@
     }
     .nav.open .nav-link::after {
       display: none;
-    }
-    .nav.open .login-m {
-      display: inline-flex;
     }
   }
 
