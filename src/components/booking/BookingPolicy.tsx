@@ -168,12 +168,11 @@ export const BookingPolicy = () => (
         <figure className="taped tape-rose w-[clamp(230px,22vw,300px)] bg-paper px-[6%] pt-[6%] [transform:rotate(-3deg)] [--tape-rot:4deg] bp-560:order-2">
           <img
             src={selfie}
-            alt="A client's finished glam selfie"
-            width={334}
-            height={700}
+            alt="A client's glam selfie: soft pink eyeshadow, full lashes, glowing highlight and a glossy pink lip"
+            width={800}
+            height={800}
             loading="lazy"
-            // The source is a tall phone screen; frame the face (eyes to lips)
-            className="aspect-square w-full object-cover object-[50%_41%]"
+            className="aspect-square w-full object-cover"
           />
           <figcaption className="rose-gold-text pt-[9%] pb-[11%] text-center font-script text-[clamp(1.75rem,2.4vw,2.25rem)] leading-none">
             @{instagramHandle}
