@@ -33,7 +33,7 @@ export const ServiceCard = ({ service, index, onBook }: ServiceCardProps) => (
           Class{service.offeredDays.length > 0 && ` · ${offeredDaysLabel(service.offeredDays)}`}
         </p>
       )}
-      <h2 className="font-display text-t-xl leading-tight">
+      <h2 className="text-t-lg leading-tight font-semibold tracking-[0.2em] uppercase">
         {/* Stretched link: the whole card is clickable */}
         <Link
           to={`/book/${service.slug}`}
