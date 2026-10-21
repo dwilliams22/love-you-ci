@@ -504,6 +504,11 @@
     transform: translateY(0.12em) rotate(-14deg) scale(0.9);
   }
 }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
 @keyframes shimmer {
   from {
     background-position: 100% 0;

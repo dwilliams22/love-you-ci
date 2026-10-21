@@ -74,7 +74,7 @@ Conventions: function components, named exports, one component per file, typed p
 - **Active nav link**: the rose-gold underline stays visible on the current route's link, with `aria-current="page"` (`NavLink`).
 - **Log In** (desktop and mobile menu) is a `<button type="button">` that does nothing yet and looks exactly like the template's link. TODO: wire it to Wix Members hosted login.
 - Social links: Instagram `https://www.instagram.com/loveyouci`, YouTube `https://www.youtube.com/c/CiaraLatrice/featured` (open in a new tab with `rel="noopener noreferrer"`).
-- Stub page (Portfolio) is bare for now: header, a plain `h1` on the paper background, footer.
+- **Portfolio** (`/portfolio`, `PortfolioPage.tsx`): see "Portfolio (feat/portfolio-page)" below.
 - **Contact** (`/contact`, `ContactPage.tsx`): see "Contact form (feat/contact-page)" below.
 - **About** (`/about`, `AboutPage.tsx`): Ci's portrait (`assets/about-ci.jpg`, cropped from her shoot) on mist with an oval feather (`.about-photo`), darkening to ink (`.about-fade`) like her About graphic. The heading sits on the seam: a giant "ABOUT" whose letters fade from paper into the ink (`.about-word`), signed across its lower half by a rose-gold script "Ci" (`.about-ci`) that swings in and shimmers once on load (off with reduced motion). `--title` on `<main>` is the heading size, and the portrait is sized from it so the whole heading fits the first screen. Only the heading sits on ink; an eased scrim (`.about-unfade`) returns to paper for the story, which opens with the "Hi Loves!" intro in the body style, the story is labelled chapters (`components/about/AboutChapter`: uppercase Barlow label beside the paragraph, hairlines between rows but not above the first chapter or the promise, an Italiana drop cap on "Hi Loves!"), the "my stamp" passage is a taped paper note on a full-bleed mist band (no parallax in the white section), the promise is the last chapter, and it signs off with "Ciara Latrice". The chapter labels are ours; every paragraph is Ci's. **All wording lives in `src/content/about.ts`**, word-for-word from her graphic.
 
@@ -153,13 +153,13 @@ Keep scratch screenshots and scripts in the session scratchpad, not the repo.
 
 ## Wix Headless
 
-- Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`, `@wix/ecom`, `@wix/categories`, `@wix/redirects`, `@wix/forms`.
+- Packages: `@wix/sdk`, `@wix/bookings`, `@wix/stores`, `@wix/ecom`, `@wix/categories`, `@wix/redirects`, `@wix/forms`, `@wix/portfolio`.
 - **One auth seam:** `src/wix/sdk.ts` (`wixModule(module)`, `wixFetch(path)`) builds the single OAuth visitor client from `src/wix/config.ts` (`VITE_WIX_CLIENT_ID`) and persists tokens in localStorage. Every Wix call goes through it; never create another client. `src/lib/wix.ts` only holds the dev smoke test.
 - `VITE_WIX_CLIENT_ID` is typed in `src/vite-env.d.ts`.
 - Ci's Wix site belongs to **her** Wix account: "CIARA LATRICE" (site ID `21782089-2304-4c5f-b2de-dfdfba302da5`, https://www.loveyouci.com, Premium). The Wix MCP is authenticated with her account (Oct 21, 2026), so MCP site context and admin calls apply to her site. Apps include Bookings, Stores, Members Area, Forms & Payments, Invoices (V1) and Chat. The visitor client (`VITE_WIX_CLIENT_ID` in a throwaway node script with `node --env-file=.env.local`) is still the way to check what the frontend itself sees.
 - Stores catalog version on her site is **V3** (confirmed through MCP site context, Oct 21, 2026). Use `productsV3` and `/stores/v3/` APIs only, never the V1 `products` module.
 - In dev, when `VITE_WIX_CLIENT_ID` is set, `main.tsx` runs `wixSmokeTest()`, which logs the counts of booking services and products to the console.
-- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), Members login, then real content for About and Portfolio (Contact is done, see below). Ask the user for content and requirements for each page before building it.
+- Planned phases after the landing page: ~~Bookings flow on `/book`~~ (done, see below) (services, availability, booking, checkout), ~~Stores on `/shop`~~ (done, see below) (products, cart, hosted checkout), Members login, then real content for About (Contact and Portfolio are done, see below). Ask the user for content and requirements for each page before building it.
 
 ## Bookings (feat/bookings-flow)
 
@@ -227,3 +227,16 @@ Wix setup (Oct 21, 2026, approved by the user): Ci's existing contact form is on
 Page: two columns at >1080px (eyebrow "CONTACT CI", `h1` "Want to chat?", intro, then Phone (text only) / Email / Social Media with hairlines), with the form in a mist panel on the right. At ≤1080px it stacks and the details become a wrapping row, and at ≤560px they stack again. Social buttons are the shared `components/ui/SocialLinks` (also used in the footer). **Wording lives in `src/content/contact.ts`**, from Ci's Wix contact page ("Touch Base" left out on purpose). Each field's error line keeps its height even when empty, so an error appearing on blur never pushes Send down mid-click. The thank-you replaces the form in place, focuses its heading, and has "Send another message" (`reset`).
 
 Live test (Oct 21, 2026): one submission ("TEST" / "please ignore") from `/contact` was stored as CONFIRMED with a CRM contact, and the thank-you showed. Whether the notification email reached Ci's inbox has not been confirmed.
+
+## Portfolio (feat/portfolio-page)
+
+Built on Wix's verified portfolio code, vendored from the `wix-headless-templates` skill (`portfolio/app`) into `src/wix/portfolio/*`, `src/hooks/portfolio/useProjectDetail.ts` and `src/components/portfolio/GalleryMedia.tsx`. **Reads only go through `useProjectDetail`.** The page shows one Wix Portfolio project, "My Portfolio" (`PORTFOLIO_PROJECT_SLUG` = `contemporary-homes`, a slug Wix kept from the starter template, in `src/content/portfolio.ts`). Its **description is the page intro** and its photos are the grid, both live, so Ci edits the text and adds, removes or reorders photos in her dashboard (Portfolio → My Portfolio). The project's "details" rows (Project type, Date) are template leftovers and are not shown.
+
+Local changes to vendored files (re-apply if you ever re-copy them):
+- `useProjectDetail`: the store lives in lazy `useState` (React Compiler rule). Remount with `key` to switch projects.
+- `portfolio-core.ts` `toGalleryItem`: images are scaled at their own aspect (`originRatio`, from `#originWidth/originHeight` or REST `width/height`) instead of the shipped 1600×1200, which cropped Ci's portrait photos to landscape.
+
+Page: `h1`, the intro, the mosaic, then a Book Now CTA. `PortfolioGrid` follows the user's mockup on the site palette with square corners and 3:4 tiles (approved): in every run of 6, photos 1 and 4 are 2×2 and the rest 1×1, laid out by `grid-flow-row-dense` on 4 columns (2 at ≤860px). Row height comes from `cqw` so every tile is exactly 3:4. A trailing partial run (`n % 6`) sits in a centered row of small tiles so the grid never has holes. Alt text is "Makeup by Ci, photo N of M" (her photo titles are file names; no captions). Clicking a tile opens `Lightbox` (native `<dialog>`): full uncropped photo, prev/next arrows (in the footer at ≤560px), ArrowLeft/ArrowRight, touch swipe, wrap-around, "N / M" counter, Escape / X / click beside the photo closes and focus returns to the last photo's tile (`flushSync` first, because the page is inert while the modal is open).
+
+Checked Oct 21, 2026: the visitor client reads the project and all 21 photos (all portrait).
+
