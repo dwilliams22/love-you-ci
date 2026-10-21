@@ -1,3 +1,4 @@
+import heroPhoto from '../../assets/hero-ci.jpg'
 import { Cta } from '../../components/ui/Cta'
 import { PhotoSlot } from '../../components/ui/PhotoSlot'
 
@@ -40,8 +41,18 @@ export const Hero = () => (
         Ci
       </span>
       <div className="hero-photo taped tape-rose aspect-[4/5] w-[min(100%,440px)] [transform:rotate(1.5deg)] [--py:-28px] [--tape-rot:-3deg] bp-860:w-[min(78%,380px)]">
-        {/* REPLACE: hero portrait of Ci, 4:5 (e.g. 1200x1500) */}
-        <PhotoSlot label="Photo 1: Ci portrait" className="size-full" parallax />
+        <PhotoSlot
+          label="Photo 1: Ci portrait"
+          className="size-full"
+          parallax
+          photo={{
+            src: heroPhoto,
+            alt: 'Ci in a black blazer, seated, with long brown curls and soft glam makeup',
+            width: 1200,
+            height: 1500,
+            priority: true,
+          }}
+        />
       </div>
     </div>
   </section>

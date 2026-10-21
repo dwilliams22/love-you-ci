@@ -1,3 +1,4 @@
+import meetPhoto from '../../assets/meet-ci.jpg'
 import signature from '../../assets/ci-signature.png'
 import { PhotoSlot } from '../../components/ui/PhotoSlot'
 import { TextLink } from '../../components/ui/TextLink'
@@ -20,8 +21,16 @@ export const MeetCi = () => (
     <div className="wrap relative grid grid-cols-[minmax(0,5fr)_minmax(0,6fr)] items-center gap-[clamp(48px,7vw,120px)] bp-860:grid-cols-1">
       <div className="relative w-[min(100%,420px)] justify-self-end pb-[12%] bp-860:w-[min(80%,360px)] bp-860:justify-self-center bp-860:pb-0">
         <div className="taped tape-rose aspect-[3/4] [transform:rotate(-2deg)] [--tape-rot:3deg]">
-          {/* REPLACE: full-length photo of Ci, 3:4 (e.g. 1200x1600) */}
-          <PhotoSlot label="Photo 2: Meet Ci" className="h-full" />
+          <PhotoSlot
+            label="Photo 2: Meet Ci"
+            className="h-full"
+            photo={{
+              src: meetPhoto,
+              alt: 'Ci smiling in a black blazer, holding up a makeup brush',
+              width: 1200,
+              height: 1600,
+            }}
+          />
         </div>
       </div>
       <div className="max-w-[30rem] bp-860:justify-self-center">
