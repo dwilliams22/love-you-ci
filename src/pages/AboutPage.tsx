@@ -38,12 +38,6 @@ export const AboutPage = () => (
           </span>
         </span>
       </h1>
-      <p
-        className="wrap hero-rise mx-auto max-w-[44rem] pt-[clamp(16px,2vw,32px)] font-display text-t-xl leading-[1.55]"
-        style={{ '--i': 2 }}
-      >
-        {aboutIntro}
-      </p>
     </section>
 
     {/* The light gradient again, in reverse: ink back to paper */}
@@ -51,7 +45,7 @@ export const AboutPage = () => (
 
     <article className="relative overflow-clip pt-[clamp(24px,4vw,56px)] pb-[clamp(96px,13vw,180px)]" aria-label="Ci's story">
       <div className="wrap">
-        {aboutJourney.map((text) => (
+        {[aboutIntro, ...aboutJourney].map((text) => (
           <p key={text.slice(0, 24)} className={`${bodyClass} mb-8`}>
             {text}
           </p>
