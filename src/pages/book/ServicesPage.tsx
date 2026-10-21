@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { ChevronDown } from 'lucide-react'
-import { Icon } from '../../components/ui/Icon'
 import { AddOnsModal } from '../../components/booking/AddOnsModal'
 import { BookingPolicy } from '../../components/booking/BookingPolicy'
 import { ServiceCard, ServiceCardSkeleton } from '../../components/booking/ServiceCard'
@@ -39,9 +37,6 @@ export const ServicesPage = () => {
           <p className="mt-6 text-t-lg leading-[1.55] text-stone">
             Pick a service to see available dates and times. A deposit secures your appointment.
           </p>
-          <a href="#services" className="text-link">
-            See services <Icon icon={ChevronDown} size={15} />
-          </a>
         </header>
 
         <BookingPolicy />
