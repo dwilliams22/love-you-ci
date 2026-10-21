@@ -35,7 +35,7 @@ export const MeetCi = () => (
       </div>
       <div className="max-w-[30rem] bp-860:justify-self-center">
         <h2
-          className="mb-7 flex items-end gap-1 font-display text-t-2xl leading-none font-normal"
+          className="mb-7 flex items-end gap-1 font-body text-t-2xl leading-none font-normal"
           id="meet-title"
         >
           Meet{' '}
