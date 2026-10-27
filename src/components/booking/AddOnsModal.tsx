@@ -49,7 +49,9 @@ export const AddOnsModal = ({ service, groups, initialSelected, onNext, onClose 
       }}
       // A click on the ::backdrop lands on the dialog element itself
       onClick={(e) => e.target === dialog.current && onClose()}
-      className="m-auto max-h-[min(88dvh,760px)] w-[min(640px,calc(100vw-32px))] flex-col bg-paper p-0 text-ink shadow-[0_40px_80px_-40px_rgba(22,20,21,0.6)] backdrop:bg-ink/55 backdrop:backdrop-blur-[2px] open:flex open:animate-[rise_0.5s_var(--ease-brand)_both]"
+      // A plain stack that scrolls as a whole, footer pinned. Not a flex column with a growing
+      // list: iPhone Safari squashed that list to a sliver
+      className="m-auto max-h-[min(88dvh,760px)] w-[min(640px,calc(100vw-32px))] overflow-y-auto overscroll-contain bg-paper p-0 text-ink shadow-[0_40px_80px_-40px_rgba(22,20,21,0.6)] backdrop:bg-ink/55 backdrop:backdrop-blur-[2px] open:animate-[rise_0.5s_var(--ease-brand)_both]"
     >
       <header className="flex items-start justify-between gap-6 px-[clamp(24px,4vw,44px)] pt-[clamp(24px,4vw,40px)]">
         <div>
@@ -69,7 +71,7 @@ export const AddOnsModal = ({ service, groups, initialSelected, onNext, onClose 
         </button>
       </header>
 
-      <div className="mt-6 flex-1 overflow-y-auto px-[clamp(24px,4vw,44px)] pb-6">
+      <div className="mt-6 px-[clamp(24px,4vw,44px)] pb-6">
         {groups === null ? (
           <div className="flex animate-pulse flex-col gap-3" aria-label="Loading add-ons">
             {Array.from({ length: 3 }, (_, i) => (
@@ -121,7 +123,7 @@ export const AddOnsModal = ({ service, groups, initialSelected, onNext, onClose 
         )}
       </div>
 
-      <footer className="flex items-center justify-between gap-4 border-t border-(--hair) px-[clamp(24px,4vw,44px)] py-5">
+      <footer className="sticky bottom-0 flex items-center justify-between gap-4 border-t border-(--hair) bg-paper px-[clamp(24px,4vw,44px)] py-5">
         <p className="text-t-sm text-stone" aria-live="polite">
           {selected.size ? `${selected.size} add-on${selected.size > 1 ? 's' : ''}${extras ? ` · ${extras}` : ''}` : 'No add-ons selected'}
         </p>
