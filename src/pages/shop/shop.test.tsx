@@ -142,7 +142,7 @@ describe('shop', () => {
 
   it('has a thank-you page that points to the confirmation email', async () => {
     renderRoute('/shop/thank-you')
-    expect(screen.getByRole('heading', { level: 1, name: 'Thank you' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Thank You' })).toBeInTheDocument()
     expect(screen.getByText(/order confirmation will arrive by email/)).toBeInTheDocument()
     await waitFor(() => expect(document.title).toBe('Thank You | Love You, Ci'))
   })

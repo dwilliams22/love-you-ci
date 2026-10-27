@@ -97,7 +97,7 @@ describe('ContactForm', () => {
     } as Partial<UseWixForm>
     render(<ContactForm formId="f" />)
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Thank you' })).toHaveFocus()
+    expect(screen.getByRole('heading', { name: 'Thank You' })).toHaveFocus()
     expect(screen.getByRole('status')).toHaveTextContent('Thanks, love!')
   })
 

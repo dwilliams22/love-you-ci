@@ -68,16 +68,16 @@ export const ContactForm = ({ formId }: ContactFormProps) => {
     return (
       <div className="flex min-h-[26rem] flex-col items-center justify-center bg-mist p-[clamp(28px,4vw,56px)] text-center">
         <h2 tabIndex={-1} ref={(el) => el?.focus()} className="font-display text-t-2xl leading-none outline-none">
-          Thank you
+          Thank You
         </h2>
         <div role="status" className="mt-6 max-w-[28rem] text-t-lg leading-[1.55] text-balance text-stone">
           {message.split('\n').filter(Boolean).map((line, i) => (
             <p key={i}>{line}</p>
           ))}
         </div>
-        {/* The gradient only paints inside the box; padding covers the script's loops past the 1em line, and the margins cancel it out */}
-        <p className="rose-gold-text mt-[calc(2rem-0.15em)] -mb-[0.15em] p-[0.15em] font-script text-[clamp(2.5rem,4vw,3.25rem)] leading-none">
-          Love you, Ci
+        {/* The gradient only paints inside the box; padding covers the script's loops (and the Y's deep tail) past the 1em line, and the margins cancel it out */}
+        <p className="rose-gold-text mt-[calc(2rem-0.15em)] -mb-[0.3em] px-[0.15em] pt-[0.15em] pb-[0.3em] font-script text-[clamp(2.5rem,4vw,3.25rem)] leading-none">
+          Love You, Ci
         </p>
         <button type="button" onClick={f.reset} className="text-link mt-10 cursor-pointer">
           Send another message <Icon icon={ChevronRight} size={15} />

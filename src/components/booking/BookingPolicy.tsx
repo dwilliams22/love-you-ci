@@ -177,7 +177,7 @@ export const BookingPolicy = () => (
         <div className="max-w-[30rem]">
           <h2 id="selfies-heading" className="font-display text-t-xl tracking-[0.06em]">
             TAG US IN YOUR
-            <span className="rose-gold-text -mt-[0.1em] block w-fit px-[0.1em] font-script text-[clamp(3.75rem,8vw,6.5rem)] leading-[1.15] tracking-normal bp-560:mx-auto">
+            <span className="rose-gold-text block w-fit text-t-2xl leading-[1.15] bp-560:mx-auto">
               Selfies!
             </span>
           </h2>

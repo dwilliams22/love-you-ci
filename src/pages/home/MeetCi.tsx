@@ -6,7 +6,11 @@ import { TextLink } from '../../components/ui/TextLink'
 const ghostClass = 'font-display text-t-ghost leading-[0.8] text-mist whitespace-nowrap'
 
 export const MeetCi = () => (
-  <section className="relative overflow-clip py-[clamp(96px,13vw,180px)]" id="meet" aria-labelledby="meet-title">
+  <section
+    className="relative overflow-clip py-[clamp(96px,13vw,180px)]"
+    id="meet"
+    aria-labelledby="meet-title"
+  >
     <div
       className="pointer-events-none absolute inset-0 flex flex-col justify-between py-[clamp(20px,3vw,40px)] select-none"
       aria-hidden
@@ -47,11 +51,9 @@ export const MeetCi = () => (
             className="-mb-[0.32em] h-auto w-[clamp(110px,12vw,160px)] bp-560:w-[104px]"
           />
         </h2>
-        <p className="mb-3.5 text-t-xl leading-[1.55]">
-          Hi, I am Ci, your personal Makeup Artist.
-        </p>
+        <p className="mb-3.5 text-t-xl leading-[1.55]">Hi, I am Ci, your personal Makeup Artist.</p>
         <p className="mb-3.5 text-t-lg leading-[1.55]">
-          Welcome to my world of beauty, where I create the &ldquo;Love you, Ci.&rdquo;
+          Welcome to my world of beauty, where I create the &ldquo;Love You, Ci.&rdquo;
         </p>
         <TextLink to="/portfolio">Portfolio</TextLink>
       </div>
