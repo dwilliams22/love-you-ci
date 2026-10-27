@@ -161,9 +161,9 @@ Ci's setup (checked through the client ID, Oct 2026): 4 appointments (Natural, S
 
 Phone fields use `components/booking/PhoneField.tsx` (libphonenumber-js): a country picker that defaults to US, formats as you type, writes `''` until the number is valid (which gates Book) and then the E.164 number (`+14048675309`).
 
-Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). Second live test (Oct 20, 2026): Natural Glam with Bottom Lashes (+5 min) and Mink Lashes. Slots came back 50 minutes long, and the checkout showed $130.00 ($115 + $15 add-ons), Pay Now $42 / Pay Later $88. It was abandoned unpaid. The paid return path to `/book/thank-you` has not been tested, because that needs a real payment.
+Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). Second live test (Oct 20, 2026): Natural Glam with Bottom Lashes (+5 min) and Mink Lashes. Slots came back 50 minutes long, and the checkout showed $130.00 ($115 + $15 add-ons), Pay Now $42 / Pay Later $88. It was abandoned unpaid. Paid test (Oct 27, 2026, by the user): a real booking was paid at checkout and returned to `/book/thank-you`. The user also confirmed the booking record (Ciara Williams, Upon Approval), the confirmation email, a live booking of the class, and the clean-up of the test bookings.
 
-Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev, plus the production domain.
+Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev (the Oct 27, 2026 tests also returned to `http://localhost:5173`), plus the production domain (the user confirmed it is set, Oct 27, 2026).
 
 ## Shop (feat/shop)
 
@@ -182,7 +182,7 @@ Pages:
 - Header: `CartButton` with a live count. `CartDrawer` is mounted once in `Layout` and opens after every add.
 - `/shop/thank-you`: same wording pattern as the bookings one, never says "confirmed".
 
-Ci's store (checked Oct 21, 2026): Butter Gloss ($14, was $15; shades Allure, Adore, Lovely, each with its own photo) and Butter Gloss Bundle ($36, was $45; out of stock, no notify-me). Shipping is set up ($3.99 delivery at checkout) and Wix estimates sales tax in the cart. Live test: added Lovely ×2, checkout opened at `https://www.loveyouci.com/__ecom/checkout` with the right line, and "Continue Browsing" returned to `/shop` (plus `?wixMemberLoggedIn=true`) with the cart intact. It was abandoned unpaid and the cart was emptied afterwards. The paid return to `/shop/thank-you` has not been tested.
+Ci's store (checked Oct 21, 2026): Butter Gloss ($14, was $15; shades Allure, Adore, Lovely, each with its own photo) and Butter Gloss Bundle ($36, was $45; out of stock, no notify-me). Shipping is set up ($3.99 delivery at checkout) and Wix estimates sales tax in the cart. Live test: added Lovely ×2, checkout opened at `https://www.loveyouci.com/__ecom/checkout` with the right line, and "Continue Browsing" returned to `/shop` (plus `?wixMemberLoggedIn=true`) with the cart intact. It was abandoned unpaid and the cart was emptied afterwards. Paid test (Oct 27, 2026, by the user): a real order was paid and returned to `/shop/thank-you`.
 
 
 ## Contact form (feat/contact-page)
@@ -195,7 +195,7 @@ Wix setup (Oct 21, 2026, approved by the user): Ci's existing contact form is on
 
 Page: two columns at >1080px (eyebrow "CONTACT CI", `h1` "Want to chat?", intro, then Phone (text only) / Email / Social Media with hairlines), with the form in a mist panel on the right. At ≤1080px it stacks and the details become a wrapping row, and at ≤560px they stack again. Social buttons are the shared `components/ui/SocialLinks` (also used in the footer). **Wording lives in `src/content/contact.ts`**, from Ci's Wix contact page ("Touch Base" left out on purpose). Each field's error line keeps its height even when empty, so an error appearing on blur never pushes Send down mid-click. The thank-you replaces the form in place, focuses its heading, and has "Send another message" (`reset`).
 
-Live test (Oct 21, 2026): one submission ("TEST" / "please ignore") from `/contact` was stored as CONFIRMED with a CRM contact, and the thank-you showed. Whether the notification email reached Ci's inbox has not been confirmed.
+Live test (Oct 21, 2026): one submission ("TEST" / "please ignore") from `/contact` was stored as CONFIRMED with a CRM contact, and the thank-you showed. The user confirmed (Oct 27, 2026) that the notification email reaches Ci's inbox.
 
 ## Portfolio (feat/portfolio-page)
 
