@@ -19,6 +19,8 @@ export interface ServiceLocation {
   id: string | null;
   name: string;
   type: "BUSINESS" | "CUSTOM" | "CUSTOMER";
+  /** A custom location's address ("Upon Approval"); slots carry only this, with no id or name. */
+  formattedAddress?: string;
 }
 
 /** A staff member as the service lists them; `id` is the resource GUID used for filtering and booking. */

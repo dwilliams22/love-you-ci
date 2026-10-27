@@ -211,9 +211,9 @@ const timeLabel = (local: string, locale?: string): string => {
 };
 
 const toSlotLocation = (raw: Raw | undefined): ServiceLocation | null => {
-  if (!raw || (!rawId(raw) && !raw.name)) return null;
+  if (!raw || (!rawId(raw) && !raw.name && !raw.formattedAddress)) return null;
   const type = (["BUSINESS", "CUSTOM", "CUSTOMER"].includes(raw.locationType) ? raw.locationType : "BUSINESS") as ServiceLocation["type"];
-  return { id: rawId(raw) || null, name: raw.name ?? "", type };
+  return { id: rawId(raw) || null, name: raw.name ?? "", type, ...(raw.formattedAddress ? { formattedAddress: raw.formattedAddress } : {}) };
 };
 
 export function toSlot(raw: Raw): Slot {
@@ -536,7 +536,10 @@ export function bookingRequest(
     if (!service.scheduleId) throw new Error("This course has no schedule to book.");
     return { ...base, bookedEntity: { schedule: { scheduleId: service.scheduleId, serviceId: service.id, timezone: timeZone } } };
   }
-  const staff = staffId ? slot.staff.find((s) => s.id === staffId) : undefined;
+  // With no staff picked, a slot only one person can take books that person (Wix's own widget
+  // does too), so checkout names her instead of "Any staff member".
+  const staff = staffId ? slot.staff.find((s) => s.id === staffId) : slot.staff.length === 1 ? slot.staff[0] : undefined;
+  const location = slot.location;
   return {
     ...base,
     bookedEntity: {
@@ -550,8 +553,14 @@ export function bookingRequest(
         ...(staff
           ? { resource: { [idKey]: staff.id, name: staff.name } }
           : { resourceSelections: [{ resourceTypeId: STAFF_RESOURCE_TYPE_ID, selectionMethod: "ANY_RESOURCE" }] }),
-        location: slot.location
-          ? { ...(slot.location.id ? { [idKey]: slot.location.id } : {}), name: slot.location.name, locationType: bookingLocationType(slot.location.type) }
+        location: location
+          ? {
+              ...(location.id ? { [idKey]: location.id } : {}),
+              // A custom location ("Upon Approval") arrives as an address only; it doubles as the name.
+              name: location.name || location.formattedAddress?.trim() || "",
+              ...(location.formattedAddress ? { formattedAddress: location.formattedAddress } : {}),
+              locationType: bookingLocationType(location.type),
+            }
           : { locationType: "OWNER_BUSINESS" },
       },
     },
