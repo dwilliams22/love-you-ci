@@ -15,13 +15,16 @@ export const SiteFooter = () => (
         height={430}
       />
       <p className="mb-7 italic tracking-[0.04em] text-balance text-stone-light">
-        Beauty from the inside out, love what you see
+        Beauty from the inside out, love what you see.
       </p>
       <Cta to="/book" light>
         Book Now
       </Cta>
 
-      <nav aria-label="Footer" className="mt-[clamp(48px,6vw,64px)] border-t border-(--hair-light) pt-7">
+      <nav
+        aria-label="Footer"
+        className="mt-[clamp(48px,6vw,64px)] border-t border-(--hair-light) pt-7"
+      >
         <ul className="flex flex-wrap justify-center gap-x-7 gap-y-3 text-[0.9375rem] bp-560:gap-x-5">
           {navItems.map((item) => (
             <li key={item.to}>
