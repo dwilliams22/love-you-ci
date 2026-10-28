@@ -25,7 +25,7 @@ npm run lint     # eslint
 npm test         # vitest
 ```
 
-Environment: copy `.env.example` to `.env.local` and set `VITE_WIX_CLIENT_ID` (the Wix Headless OAuth client ID). `.env.local` is gitignored; never commit secrets.
+Environment: `VITE_WIX_CLIENT_ID` (the Wix Headless OAuth client ID) lives in `.env.local`, which is gitignored. There is no `.env.example` on purpose (removed Oct 28, 2026); don't add it back. The README's "Environment variables" section explains the setup instead. Never commit secrets.
 
 ## Structure
 
@@ -163,7 +163,7 @@ Phone fields use `components/booking/PhoneField.tsx` (libphonenumber-js): a coun
 
 Live test (Oct 20, 2026, Natural Glam, Oct 29 4:00 PM, "TEST - please ignore"): the booking was accepted and the app redirected to Ci's checkout at `https://www.loveyouci.com/__ecom/checkout` with Pay Now $42 / Pay Later $73. It was abandoned without paying, and "Continue Browsing" returned to `/book` (Wix appends `?wixMemberLoggedIn=true`, which is harmless). Second live test (Oct 20, 2026): Natural Glam with Bottom Lashes (+5 min) and Mink Lashes. Slots came back 50 minutes long, and the checkout showed $130.00 ($115 + $15 add-ons), Pay Now $42 / Pay Later $88. It was abandoned unpaid. Paid test (Oct 27, 2026, by the user): a real booking was paid at checkout and returned to `/book/thank-you`. The user also confirmed the booking record (Ciara Williams, Upon Approval), the confirmation email, a live booking of the class, and the clean-up of the test bookings.
 
-Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5180` for dev (the Oct 27, 2026 tests also returned to `http://localhost:5173`), plus the production domain (the user confirmed it is set, Oct 27, 2026).
+Checkout must redirect back to an origin on the OAuth app's allowed domains (Wix → Headless Settings): `http://localhost:5173` for dev (the default Vite port; 5180 was removed Oct 28, 2026, so don't change the dev port), plus the production domain (the user confirmed it is set, Oct 27, 2026).
 
 ## Shop (feat/shop)
 
@@ -189,7 +189,9 @@ Ci's store (checked Oct 21, 2026): Butter Gloss ($14, was $15; shades Allure, Ad
 
 Built on Wix's verified forms code, vendored from the `wix-headless-templates` skill (`forms/app`) into `src/wix/forms/*` and `src/hooks/forms/useWixForm.ts`. **Values, validation and submit only go through `useWixForm`.** Never hand-build a submission, and never name a field in code: `ContactForm` renders `form.fields` from the live schema, so Ci can rename, add or reorder fields in her dashboard. Layout keys off `identifier` only (first/last name sit side by side).
 
-Local change to vendored files (re-apply if you ever re-copy them): `useWixForm` keeps the store in lazy `useState` (React Compiler rule). Remount with `key={formId}` to switch forms.
+Local changes to vendored files (re-apply if you ever re-copy them):
+- `useWixForm` keeps the store in lazy `useState` (React Compiler rule). Remount with `key={formId}` to switch forms.
+- `submissions-core.ts` `requiredMessage`: a required `textarea` (the Message box) says "Enter a message." instead of Wix's generic "Enter an answer." Single-line text fields keep the generic copy. Tests: `requiredMessage.test.ts`.
 
 Wix setup (Oct 21, 2026, approved by the user): Ci's existing contact form is on the **old** Wix Forms app, which headless can't reach, and it was left untouched. We installed the new Wix Forms app (`225dd912-7dea-4738-8688-4b8c6955ffc2`) and created a separate form **"Contact (new website)"**, `88150620-90c5-48a1-8aae-c49b6cfdb4d5` (`CONTACT_FORM_ID` in `src/content/contact.ts`), with the same fields as her Wix page: First Name, Last Name, Email (required), Message (required since Oct 21, 2026, so no empty enquiries), button "Send", thank-you "Thank you for reaching out! Your message has been sent." Wix auto-created an active automation, "New submission received for Contact (new website)", that emails the site owner (Reply-To is the visitor). Dashboard: `https://manage.wix.com/dashboard/21782089-2304-4c5f-b2de-dfdfba302da5/wix-forms/form/88150620-90c5-48a1-8aae-c49b6cfdb4d5`.
 

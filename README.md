@@ -8,9 +8,10 @@ Love You, Ci is a React + TypeScript frontend built on top of an existing Wix si
 
 ## Key Features
 
-- **Appointment booking:** clients choose a service, pick optional add-ons (which lengthen the time slot and add to the price), choose a day on a month calendar and a time grouped by Morning, Afternoon and Evening, then fill in Ci's booking form and pay the deposit through Wix's hosted checkout.
+- **Appointment booking:** clients choose a service, pick optional add-ons (which lengthen the time slot and add to the price), choose a day on a month calendar and a time grouped by Morning, Afternoon and Evening, then fill in Ci's booking form and pay the deposit through Wix's hosted checkout. Bookings are made with Ci and her "Upon Approval" location, so checkout and the booking record match bookings made on her Wix site.
 - **Booking policy:** Ci's policies, hours, studio details and add-on prices appear on `/book` above the services, word for word from her policy graphic.
-- **Online shop:** a product grid with sale prices and ribbons, product pages with shade swatches that swap the photo and update the URL (`?variantId=`), a quantity stepper, and a slide-out cart that opens after every add and sends clients to Wix's hosted checkout.
+- **Online shop:** a product grid with sale prices and ribbons, product pages with shade swatches that swap the photo and update the URL (`?variantId=`), a quantity stepper, and a slide-out cart (with a live count in the header) that opens after every add and sends clients to Wix's hosted checkout.
+- **Checkout round trips:** both checkouts return to the site. Paying lands on a thank-you page (`/book/thank-you` or `/shop/thank-you`) that points to the confirmation email, and "Continue Browsing" returns to `/book` or `/shop` with the cart intact.
 - **Schema-driven contact form:** the form is drawn from the live Wix Forms schema, so Ci can rename, add or reorder fields in her dashboard and the site follows. Errors show on blur without moving the Send button, and a thank-you message replaces the form in place.
 - **Portfolio mosaic:** photos and the intro text come from Wix Portfolio. The grid uses a repeating 3:4 layout with large feature tiles, and a full-screen lightbox supports arrow keys, swipe, wrap-around and focus return.
 - **About page:** an editorial layout with Ci's portrait fading into ink, an animated script "Ci" signature, and her story set in labelled chapters.
@@ -29,6 +30,7 @@ Love You, Ci is a React + TypeScript frontend built on top of an existing Wix si
 - **Forms:** libphonenumber-js for international phone input with live formatting
 - **Testing:** Vitest and React Testing Library (jsdom)
 - **Tooling:** npm, ESLint
+- **Hosting:** Vercel (static build with an SPA rewrite in `vercel.json`)
 
 ## Technical Highlights
 
@@ -38,6 +40,47 @@ Love You, Ci is a React + TypeScript frontend built on top of an existing Wix si
 - Rendering forms from the live Wix schema, so content changes in the dashboard need no deploy.
 - Keeping the interface accessible: native `<dialog>` modals, `aria-current` and `aria-expanded` states, focus management on close, keyboard control for the carousel and lightbox, and reduced-motion support throughout.
 - Writing every page against a shared token system, with custom max-width breakpoint variants (`bp-1080:`, `bp-860:`, `bp-560:`) for exact breakpoint behavior.
+- Verifying every flow against Ci's live Wix site, including paid end-to-end tests of a booking, a class and a shop order, plus a contact form submission that reaches her inbox.
+
+## Where Content Lives
+
+Most of the site is edited in Ci's Wix dashboard, with no code change or deploy:
+
+| What | Where to change it |
+|---|---|
+| Services, prices, deposits, add-ons, availability, service order | Wix Bookings |
+| Booking form fields | Wix Bookings > booking form |
+| Products, shades, photos, prices, stock, ribbons | Wix Stores |
+| Contact form fields and notification email | Wix Forms > "Contact (new website)" |
+| Portfolio intro and photos (add, remove, reorder) | Wix Portfolio > "My Portfolio" |
+
+Copy that is part of the design lives in `src/content/` and needs a deploy to change:
+
+| File | Content |
+|---|---|
+| `about.ts` | About page story, word for word from Ci's About graphic |
+| `bookingPolicy.ts` | Key notes, hours, studio details, add-on prices and policy rules on `/book` |
+| `contact.ts` | Contact page intro and details, plus the Wix form ID |
+| `portfolio.ts` | The Wix Portfolio project slug |
+
+Navigation and footer links come from `src/config/nav.ts`, and photos on the home, About and booking pages are in `src/assets/`.
+
+## Project Structure
+
+```
+src/
+  main.tsx, router.tsx   app entry and routes (unknown URLs redirect to /)
+  index.css              Tailwind import, design tokens, component classes, keyframes
+  config/nav.ts          header and footer links
+  content/               page copy kept in code
+  assets/                photos, logo and signature
+  components/            layout, shared UI, and booking, shop, contact, portfolio and About pieces
+  hooks/                 carousel and parallax hooks, plus the Wix data hooks
+  pages/                 home, about, book, portfolio, contact and shop pages
+  wix/                   the single Wix client (sdk.ts) and Wix's headless code for
+                         bookings, storefront, forms and portfolio
+  test/                  Vitest setup and the renderRoute helper
+```
 
 ## Getting Started
 
@@ -45,7 +88,7 @@ This is a [Vite](https://vite.dev) + React + TypeScript project.
 
 ### Environment variables
 
-The app talks to Wix through a Wix Headless OAuth client. Copy `.env.example` to `.env.local` and set the client ID (Wix dashboard > Settings > Headless Settings):
+The app talks to Wix through a Wix Headless OAuth client. Create a `.env.local` file in the project root and set the client ID (Wix dashboard > Settings > Headless Settings):
 
 ```bash
 VITE_WIX_CLIENT_ID=your-wix-headless-client-id
@@ -64,11 +107,7 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
 
-Wix checkout can only redirect back to domains allowed in the OAuth app's Headless Settings. To test booking or shop checkout locally, run the dev server on the allowed port:
-
-```bash
-npm run dev -- --port 5180
-```
+Wix checkout can only redirect back to domains allowed in the OAuth app's Headless Settings. `http://localhost:5173` is on that list, so booking and shop checkout work locally with the default dev server. If Vite starts on a different port because 5173 is busy, free up 5173 and restart, or the checkout can't redirect back.
 
 ### Other scripts
 
@@ -89,4 +128,6 @@ npm test         # run the Vitest suite
 
 ## Deploy
 
-`npm run build` outputs a static site to `dist/` that can be hosted anywhere that serves single-page apps. Point all routes to `index.html` so client-side routes like `/book` and `/shop/:slug` load directly. Set `VITE_WIX_CLIENT_ID` in your host's build environment, and add your production domain to the allowed domains in Wix Headless Settings so checkout can redirect back to the site.
+The site is deployed on [Vercel](https://vercel.com). `npm run build` outputs a static site to `dist/`, and `vercel.json` rewrites every path to `index.html` so client-side routes like `/book` and `/shop/:slug` load directly.
+
+To deploy somewhere else, use any host that serves single-page apps and point all routes to `index.html`. In either case, add the production domain to the allowed domains in Wix Headless Settings, or checkout can't redirect back to the site.
