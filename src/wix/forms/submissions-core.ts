@@ -328,6 +328,7 @@ export function requiredMessage(f: FormFieldDto): string {
     case "file": return "Upload a file.";
     case "signature": return "Sign in the box above.";
     case "address": return "Enter an address.";
+    case "textarea": return "Enter a message.";
     default: return "Enter an answer.";
   }
 }
